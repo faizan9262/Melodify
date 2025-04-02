@@ -21,23 +21,10 @@ import playlistRouter from './routes/playlist.routes.js';
     app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser());
 
-    const allowedOrigins = [
-        'https://melodify-mood.vercel.app',  // Production
-        'https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app',  // Preview Deployment
-        'http://localhost:3000' // Allow local testing
-    ];
     
     app.use(cors({
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: "*",
         credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization']
     }));
     
 
