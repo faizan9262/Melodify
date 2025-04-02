@@ -76,12 +76,20 @@ export const getSpotifyCallback = async (req, res) => {
       }
     );
 
-    res.json(response.data); // Send access_token to frontend
+    const { access_token, refresh_token } = response.data;
+
+    // ✅ Redirect to frontend with tokens as query parameters
+    const FRONTEND_URL ="https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app/";
+    res.redirect(`${FRONTEND_URL}/dashboard?access_token=${access_token}&refresh_token=${refresh_token}`);
   } catch (error) {
     console.error("Error getting Spotify token:", error.message);
-    res.status(500).json({ error: "Failed to get access token" });
+    
+    // Redirect to error page on frontend
+    const FRONTEND_URL = "https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app/";
+    res.redirect(`${FRONTEND_URL}/error?message=${encodeURIComponent(error.message)}`);
   }
 };
+
 
 
 export const getPlaylistData = async (req, res) => {
