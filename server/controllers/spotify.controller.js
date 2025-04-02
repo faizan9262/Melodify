@@ -31,7 +31,7 @@ export const getSpotifyLogin =  (req, res) => {
 
   const authUrl = `https://accounts.spotify.com/authorize?${new URLSearchParams({
     client_id: CLIENT_ID,
-    response_type: "token",
+    response_type: "code",
     redirect_uri: REDIRECT_URI,
     scope: [
       "user-read-email",
