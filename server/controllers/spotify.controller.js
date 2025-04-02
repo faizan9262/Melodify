@@ -52,6 +52,38 @@ export const getSpotifyLogin =  (req, res) => {
   res.redirect(authUrl);
 };
 
+export const getSpotifyCallback = async (req, res) => {
+  const code = req.query.code;
+
+  if (!code) {
+    return res.status(400).json({ error: "No code provided" });
+  }
+
+  try {
+    const response = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: REDIRECT_URI,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    res.json(response.data); // Send access_token to frontend
+  } catch (error) {
+    console.error("Error getting Spotify token:", error.message);
+    res.status(500).json({ error: "Failed to get access token" });
+  }
+};
+
+
 export const getPlaylistData = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1]; // Extract actual token
