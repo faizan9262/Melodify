@@ -8,8 +8,7 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 
-
-export const getSpotifyLogin =  (req, res) => {
+export const getSpotifyLogin = (req, res) => {
   // const clientId = CLIENT_ID;
   // const redirectUrl = REDIRECT_URI; // Fixed
   // const apiUrl = "https://accounts.spotify.com/authorize"; // Fixed to HTTPS
@@ -26,28 +25,28 @@ export const getSpotifyLogin =  (req, res) => {
   //   "playlist-read-collaborative",
   //   "streaming"
   // ].join(" "));
-  
-  
 
-  const authUrl = `https://accounts.spotify.com/authorize?${new URLSearchParams({
-    client_id: CLIENT_ID,
-    response_type: "code",
-    redirect_uri: REDIRECT_URI,
-    scope: [
-      "user-read-email",
-    "user-read-private",
-    "user-read-playback-state",
-    "user-modify-playback-state",
-    "user-read-currently-playing",
-    "user-read-playback-position",
-    "user-top-read",
-    "user-read-recently-played",
-    "playlist-read-private",
-    "playlist-read-collaborative",
-    "streaming"
-    ].join(" "),
-    show_dialog: "true"
-  })}`;
+  const authUrl = `https://accounts.spotify.com/authorize?${new URLSearchParams(
+    {
+      client_id: CLIENT_ID,
+      response_type: "code",
+      redirect_uri: REDIRECT_URI,
+      scope: [
+        "user-read-email",
+        "user-read-private",
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "user-read-currently-playing",
+        "user-read-playback-position",
+        "user-top-read",
+        "user-read-recently-played",
+        "playlist-read-private",
+        "playlist-read-collaborative",
+        "streaming",
+      ].join(" "),
+      show_dialog: "true",
+    }
+  )}`;
 
   res.redirect(authUrl);
 };
@@ -78,19 +77,18 @@ export const getSpotifyCallback = async (req, res) => {
 
     const { access_token, refresh_token } = response.data;
 
-    // ✅ Redirect to frontend with tokens as query parameters
-    const FRONTEND_URL ="https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app/";
-    res.redirect(`${FRONTEND_URL}/dashboard?access_token=${access_token}&refresh_token=${refresh_token}`);
+    // Redirect to HOME (`/`) instead of `/dashboard`
+    const FRONTEND_URL =
+      "https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app";
+
+    res.redirect(
+      `${FRONTEND_URL}/?access_token=${access_token}&refresh_token=${refresh_token}`
+    );
   } catch (error) {
     console.error("Error getting Spotify token:", error.message);
-    
-    // Redirect to error page on frontend
-    const FRONTEND_URL = "https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app/";
-    res.redirect(`${FRONTEND_URL}/error?message=${encodeURIComponent(error.message)}`);
+    res.status(500).json({ error: "Failed to get access token" });
   }
 };
-
-
 
 export const getPlaylistData = async (req, res) => {
   try {
@@ -135,10 +133,9 @@ export const getPlaylistTrack = async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    console.log(error.messsage)
+    console.log(error.messsage);
   }
 };
-
 
 // export const refreshAccessToken = async (req,res) =>{
 //   const {refreshToken} = req.body
