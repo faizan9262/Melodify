@@ -21,7 +21,7 @@ import playlistRouter from './routes/playlist.routes.js';
     app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser());
 
-    const allowedOrigins = ['http://localhost:5173'];
+    const allowedOrigins = ['https://melodify-mood.vercel.app'];
     app.use(cors({
         origin: allowedOrigins,
         credentials: true,  // Allow credentials (cookies, auth headers)
