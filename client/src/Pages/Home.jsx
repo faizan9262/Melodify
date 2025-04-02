@@ -21,6 +21,11 @@ const Home = () => {
     return false;
   };
 
+  useEffect(() => {
+    console.log("Current Token:", token);
+  }, [token]);
+  
+
   // Effect to clear token if it has expired.
   useEffect(() => {
     if (token && isTokenExpired()) {
@@ -49,40 +54,42 @@ const Home = () => {
   }, [token, backendUrl]);
 
   // Extract token from URL hash or localStorage.
-  useEffect(() => {
-    const extractToken = () => {
-      const hash = window.location.hash;
-      const params = new URLSearchParams(hash.replace("#", "?"));
-      const accessToken = params.get("access_token");
-      const expiresIn = params.get("expires_in"); // expires_in in seconds
-
-      if (accessToken) {
-        setToken(accessToken);
-        localStorage.setItem("spotifyToken", accessToken);
-        if (expiresIn) {
-          // Store token expiry timestamp in local storage
-          localStorage.setItem(
-            "spotifyTokenExpiry",
-            Date.now() + parseInt(expiresIn, 10) * 1000
-          );
-        }
-        // Optionally, clear the URL hash.
-        window.history.replaceState(null, "", window.location.pathname);
-        console.log("Access Token:", accessToken);
-      } else {
-        // If no token in URL, try to restore from localStorage if valid.
-        const storedToken = localStorage.getItem("spotifyToken");
-        const expiry = localStorage.getItem("spotifyTokenExpiry");
-        if (storedToken && expiry && Date.now() < parseInt(expiry, 10)) {
-          setToken(storedToken);
-        } else {
-          console.log("No valid access token found.");
-        }
+  const extractToken = () => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("access_token");
+    const expiresIn = params.get("expires_in");
+  
+    if (accessToken) {
+      setToken(accessToken);
+      localStorage.setItem("spotifyToken", accessToken);
+      if (expiresIn) {
+        localStorage.setItem("spotifyTokenExpiry", Date.now() + parseInt(expiresIn, 10) * 1000);
       }
-    };
-
+      window.history.replaceState(null, "", window.location.pathname);
+      console.log("Extracted Access Token:", accessToken);
+    } else {
+      const storedToken = localStorage.getItem("spotifyToken");
+      const expiry = localStorage.getItem("spotifyTokenExpiry");
+      if (storedToken && expiry && Date.now() < parseInt(expiry, 10)) {
+        setToken(storedToken);
+      } else {
+        console.log("No valid access token found.");
+      }
+    }
+  };
+  
+  useEffect(() => {
     extractToken();
   }, [setToken]);
+  
+  useEffect(() => {
+    console.log("Stored Token in localStorage:", localStorage.getItem("spotifyToken"));
+  }, []);
+
+  useEffect(() => {
+    console.log("Is Logged In:", isLoggedIn);
+  }, [isLoggedIn]);
+  
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
