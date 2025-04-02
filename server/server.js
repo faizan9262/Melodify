@@ -21,13 +21,25 @@ import playlistRouter from './routes/playlist.routes.js';
     app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser());
 
-    const allowedOrigins = ['https://melodify-mood.vercel.app'];
+    const allowedOrigins = [
+        'https://melodify-mood.vercel.app',  // Production
+        'https://melodify-mood-hta3xutxp-faizan-shaikhs-projects-f4141c53.vercel.app',  // Preview Deployment
+        'http://localhost:3000' // Allow local testing
+    ];
+    
     app.use(cors({
-        origin: allowedOrigins,
-        credentials: true,  // Allow credentials (cookies, auth headers)
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization']
     }));
+    
 
     // Use auth router for authentication routes
     app.use('/api/auth', authRouter);

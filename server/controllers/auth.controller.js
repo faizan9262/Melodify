@@ -64,8 +64,6 @@ export const loginUser = async (req, res) => {
       $or: [{ username: identifier }, { email: identifier }],
     });
 
-    
-
     if (!user) {
       return res.json({
         success: false,
@@ -149,7 +147,7 @@ export const sendUserVerificationOtp = async (req, res) => {
     res.json({
       success: false,
       message: error.message,
-    }); 
+    });
   }
 };
 
@@ -188,19 +186,19 @@ export const verifyEmail = async (req, res) => {
     res.json({
       success: false,
       message: error.message,
-    }); 
+    });
   }
 };
 
-export const isAuthenticated = async (req,res) =>{
+export const isAuthenticated = async (req, res) => {
   try {
     res.json({
-      success:true
-    })
+      success: true,
+    });
   } catch (error) {
     res.json({
       success: false,
       message: error.message,
-    }); 
+    });
   }
-}
+};
