@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaSpotify } from "react-icons/fa";
+import { AppContext } from "../context/AppContext";
 
 const SpotifyLogin = () => {
+  const {backendUrl} = useContext(AppContext)
   const loginWithSpotify = () => {
     // Redirect to Spotify login endpoint.
-    window.location.href = "http://localhost:3000/api/auth/spotify/login";
+    window.location.href = `${backendUrl}/api/auth/spotify/login`;
   };
 
   return (
