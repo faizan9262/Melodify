@@ -23,7 +23,7 @@ import playlistRouter from './routes/playlist.routes.js';
 
     
     app.use(cors({
-        origin: "*",
+        origin: "https://melodify-inky.vercel.app/",
         credentials: true,
     }));
     
