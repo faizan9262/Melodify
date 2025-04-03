@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Button from "../components/Button";
 import { FaMusic } from "react-icons/fa";
@@ -12,21 +12,40 @@ const Home = () => {
   const { isLoggedIn, backendUrl, token, setToken } = useContext(AppContext);
   const navigate = useNavigate();
 
-  // Check if the Spotify access token has expired.
+  // ✅ Function to check if the token is expired
   const isTokenExpired = () => {
     const expiry = localStorage.getItem("spotifyTokenExpiry");
-    if (expiry && Date.now() > parseInt(expiry, 10)) {
-      return true;
-    }
-    return false;
+    return expiry && Date.now() > parseInt(expiry, 10);
   };
 
-  useEffect(() => {
-    console.log("Current Token:", token);
-  }, [token]);
-  
+  // ✅ Function to extract and store the Spotify token
+  const extractToken = () => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1)); // Extract from hash
+    const accessToken = hashParams.get("access_token");
+    const expiresIn = hashParams.get("expires_in");
 
-  // Effect to clear token if it has expired.
+    if (accessToken) {
+      setToken(accessToken);
+      localStorage.setItem("spotifyToken", accessToken);
+      if (expiresIn) {
+        localStorage.setItem(
+          "spotifyTokenExpiry",
+          Date.now() + parseInt(expiresIn, 10) * 1000
+        );
+      }
+      window.history.replaceState(null, "", window.location.pathname); // Clean URL
+      console.log("Extracted Access Token:", accessToken);
+    } else {
+      const storedToken = localStorage.getItem("spotifyToken");
+      if (storedToken && !isTokenExpired()) {
+        setToken(storedToken);
+      } else {
+        console.log("No valid access token found.");
+      }
+    }
+  };
+
+  // ✅ Clear token if expired
   useEffect(() => {
     if (token && isTokenExpired()) {
       console.log("Token expired. Removing token.");
@@ -36,7 +55,12 @@ const Home = () => {
     }
   }, [token, setToken]);
 
-  // Log play if token exists and is valid.
+  // ✅ Extract token from URL on mount
+  useEffect(() => {
+    extractToken();
+  }, []);
+
+  // ✅ Log play if token exists
   useEffect(() => {
     const logPlay = async () => {
       try {
@@ -52,44 +76,6 @@ const Home = () => {
       logPlay();
     }
   }, [token, backendUrl]);
-
-  // Extract token from URL hash or localStorage.
-  const extractToken = () => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get("access_token");
-    const expiresIn = params.get("expires_in");
-  
-    if (accessToken) {
-      setToken(accessToken);
-      localStorage.setItem("spotifyToken", accessToken);
-      if (expiresIn) {
-        localStorage.setItem("spotifyTokenExpiry", Date.now() + parseInt(expiresIn, 10) * 1000);
-      }
-      window.history.replaceState(null, "", window.location.pathname);
-      console.log("Extracted Access Token:", accessToken);
-    } else {
-      const storedToken = localStorage.getItem("spotifyToken");
-      const expiry = localStorage.getItem("spotifyTokenExpiry");
-      if (storedToken && expiry && Date.now() < parseInt(expiry, 10)) {
-        setToken(storedToken);
-      } else {
-        console.log("No valid access token found.");
-      }
-    }
-  };
-  
-  useEffect(() => {
-    extractToken();
-  }, [setToken]);
-  
-  useEffect(() => {
-    console.log("Stored Token in localStorage:", localStorage.getItem("spotifyToken"));
-  }, []);
-
-  useEffect(() => {
-    console.log("Is Logged In:", isLoggedIn);
-  }, [isLoggedIn]);
-  
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
