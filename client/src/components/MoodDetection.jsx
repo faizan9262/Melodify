@@ -167,6 +167,33 @@ const MoodDetection = () => {
     }
   };
 
+  const getPlaylistTracks = async (id) => {
+    try {
+      const response = await axios.get(
+        `${backendUrl}/api/auth/spotify/playlists/${id}/tracks`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Process and set songs data from playlist tracks
+      setSongsData(
+        response.data.items.map((item) => ({
+          name: item.track.name,
+          artists: item.track.artists.map((artist) => artist.name),
+          image: item.track.album.images?.[2]?.url || "",
+          duration: item.track.duration_ms,
+          track_uri: item.track.uri,
+        }))
+      );
+
+      // Navigate to the playlist's detailed page
+      navigate(`/playlist/${id}`);
+    } catch (error) {
+      console.error("Error fetching playlist tracks:", error);
+    }
+  };
+
   return (
     <>
       <div
