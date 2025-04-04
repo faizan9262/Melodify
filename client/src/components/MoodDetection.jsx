@@ -21,6 +21,8 @@ const MoodDetection = () => {
   const intervalRef = useRef(null);
   const inputRef = useRef();
 
+  const navigate =  useNavigate()
+
   const {
     backendUrl,
     token,
