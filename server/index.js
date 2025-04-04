@@ -23,8 +23,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "https://melodify-client.vercel.app" // add your frontend vercel domain
+      "https://melodify-mood.vercel.app/" // add your frontend vercel domain
     ],
     credentials: true,
   })
