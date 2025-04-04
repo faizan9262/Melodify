@@ -7,7 +7,8 @@ import { FaArrowRight } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
-  const { userData, backendUrl, setIsLoggedIn, setUserData } = useContext(AppContext);
+  const { userData, backendUrl, setIsLoggedIn, setUserData } =
+    useContext(AppContext);
   const navigate = useNavigate();
 
   // Local state for edit mode and form fields
@@ -77,7 +78,9 @@ const Profile = () => {
         setUserData((prev) => ({
           ...prev,
           username: newUsername,
-          profile: selectedFile ? URL.createObjectURL(selectedFile) : prev.profile,
+          profile: selectedFile
+            ? URL.createObjectURL(selectedFile)
+            : prev.profile,
         }));
         setIsEditing(false);
         setSelectedFile(null);
@@ -91,16 +94,43 @@ const Profile = () => {
     }
   };
 
+  const sendOtp = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/auth/email-verifcation-otp`,
+        {},
+        { withCredentials: true } // Ensures cookies (like JWT) are sent
+      );
+
+      // console.log(response.data);
+      if (response.data.success) {
+        alert("OTP sent to your email!");
+        navigate("/verify-email")
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert("Failed to send OTP. Try again later.");
+    }
+  };
+
   return (
     <div className="bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
       <Navbar />
       <div className="h-screen w-full flex gap-5 flex-col items-center justify-center px-4 sm:px-6 md:px-8 overflow-y-hidden">
         <div className="relative">
           <img
-            src={selectedFile ? URL.createObjectURL(selectedFile) : userData.profile}
+            src={
+              selectedFile
+                ? URL.createObjectURL(selectedFile)
+                : userData.profile
+            }
             alt="profile"
             onClick={handleImageClick}
-            className={`w-24 h-24 rounded-full object-cover border-4 border-white ${isEditing ? "cursor-pointer" : ""}`}
+            className={`w-24 h-24 rounded-full object-cover border-4 border-white ${
+              isEditing ? "cursor-pointer" : ""
+            }`}
           />
           {isEditing && (
             <input
@@ -115,12 +145,16 @@ const Profile = () => {
         <h1 className="text-xl md:text-3xl flex gap-2 items-center justify-center text-white font-semibold text-center">
           Welcome to Melodify,{" "}
           {userData?.username
-            ? userData.username.charAt(0).toUpperCase() + userData.username.slice(1)
+            ? userData.username.charAt(0).toUpperCase() +
+              userData.username.slice(1)
             : "User"}
         </h1>
         <div className="flex flex-col gap-3 w-full sm:w-2/3 md:w-1/2 items-start">
           <div className="flex w-full items-center">
-            <label htmlFor="username" className="text-white font-medium text-lg sm:text-base md:text-lg w-1/3">
+            <label
+              htmlFor="username"
+              className="text-white font-medium text-lg sm:text-base md:text-lg w-1/3"
+            >
               Username
             </label>
             {isEditing ? (
@@ -142,7 +176,10 @@ const Profile = () => {
             )}
           </div>
           <div className="flex w-full items-center">
-            <label htmlFor="email" className="text-white flex gap-2 items-center font-medium text-lg sm:text-base md:text-lg w-1/3">
+            <label
+              htmlFor="email"
+              className="text-white flex gap-2 items-center font-medium text-lg sm:text-base md:text-lg w-1/3"
+            >
               Email
               {userData.isUserVerified ? (
                 <MdVerified color="green" className="w-6 h-6" />
@@ -171,7 +208,9 @@ const Profile = () => {
               onClick={handleSave}
               disabled={loading}
               className={`bg-[#7B3F00] text-white text-lg sm:text-base md:text-lg py-1 w-full sm:w-1/2 rounded-lg font-medium transition-all duration-300 ${
-                loading ? "opacity-50 cursor-not-allowed" : "hover:scale-105 hover:bg-white hover:text-black"
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:scale-105 hover:bg-white hover:text-black"
               }`}
             >
               {loading ? "Saving..." : "Save"}
@@ -186,7 +225,7 @@ const Profile = () => {
           )}
           {!userData.isUserVerified && (
             <button
-              onClick={() => navigate("/verify-email")}
+              onClick={sendOtp}
               className="bg-[#7B3F00] text-white text-lg sm:text-base md:text-lg py-1 w-full sm:w-1/2 rounded-lg font-medium hover:scale-105 hover:bg-white hover:text-black transition-all duration-300"
             >
               Verify Email
