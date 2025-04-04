@@ -7,7 +7,7 @@ import { FaArrowRight } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
-  const { userData, backendUrl, setIsLoggedIn, setUserData } =
+  const { userData, backendUrl, setIsLoggedIn,setToken, setUserData } =
     useContext(AppContext);
   const navigate = useNavigate();
 
@@ -31,6 +31,7 @@ const Profile = () => {
         if (data.success) {
           setIsLoggedIn(false);
           setUserData("");
+          setToken("")
           localStorage.removeItem("spotifyToken");
           navigate("/");
         }

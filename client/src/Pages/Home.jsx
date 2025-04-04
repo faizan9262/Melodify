@@ -76,7 +76,6 @@ const Home = () => {
       logPlay();
     }
   }, [token, backendUrl]);
-
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
       <Navbar />
@@ -96,7 +95,8 @@ const Home = () => {
               Melodify is where your emotions meet the perfect melody. Whether
               you're joyful, reflective, or in between, we curate music that
               understands you. Let your mood guide the tunes and discover a
-              companion for every moment. Start your journey with Melodify today!
+              companion for every moment. Start your journey with Melodify
+              today!
             </p>
             <SpotifyLogin />
           </section>
