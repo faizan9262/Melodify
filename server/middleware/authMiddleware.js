@@ -15,7 +15,7 @@ export const protect = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Fetch the full user object using the decoded ID
-        const user = await Usermodel.findById(req.user._id);
+        const user = await Usermodel.findById(decoded.id);
 
         if (!user) {
             return res.status(404).json({

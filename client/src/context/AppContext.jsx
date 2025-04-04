@@ -20,7 +20,9 @@ export const AppContextProvider = (props) => {
 
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/user/profile`);
+      const { data } = await axios.get(`${backendUrl}/api/user/profile`,{
+        withCredentials:true
+      });
       if (data.success) {
         setUserData(data.user);
       } else {
@@ -44,16 +46,20 @@ export const AppContextProvider = (props) => {
 
   const getAuthStatus = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
+      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`, {
+        withCredentials: true, // <-- this is important
+      });
       if (data.success) {
         setIsLoggedIn(true);
       } else {
-        console.log(data.message);
+        setIsLoggedIn(false);
       }
     } catch (error) {
-      console.log(error.message);
+      console.log("Auth status check failed:", error.message);
+      setIsLoggedIn(false);
     }
   };
+  
 
   // Initialize token from localStorage
   useEffect(() => {
