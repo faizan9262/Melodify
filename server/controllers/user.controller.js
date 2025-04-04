@@ -4,7 +4,7 @@ import transporter from "../config/nodemailer.js";
 
 export const profile = async (req, res) => {
   try {
-    const user = await Usermodel.findById(req.user.id);
+    const user = req.user;
 
     if (!user) {
       return res.json({
