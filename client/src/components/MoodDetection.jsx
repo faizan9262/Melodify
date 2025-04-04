@@ -41,15 +41,14 @@ const MoodDetection = () => {
           faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
           faceapi.nets.faceExpressionNet.loadFromUri("/models"),
         ]);
-        console.log("✅ FaceAPI models loaded");
+        console.log("FaceAPI models loaded");
       } catch (error) {
-        console.error("❌ Error loading face detection models:", error);
+        console.error("Error loading face detection models:", error);
       }
     };
     loadModels();
   }, []);
 
-  // ✅ Start Video & Initialize Detection
   const startVideo = async () => {
     setLoading(true);
     setCameraOn(true);
@@ -63,18 +62,19 @@ const MoodDetection = () => {
       videoRef.current.onloadedmetadata = () => {
         setLoading(false);
         if (canvasRef.current) {
-          canvasRef.current.width = videoRef.current.videoWidth;
-          canvasRef.current.height = videoRef.current.videoHeight;
+          const aspectRatio = videoRef.current.videoWidth / videoRef.current.videoHeight;
+          canvasRef.current.width = videoRef.current.clientWidth;
+          canvasRef.current.height = canvasRef.current.width / aspectRatio;
         }
         detectMood(); // Start detecting after video loads
       };
     } catch (error) {
-      console.error("❌ Error accessing webcam:", error);
+      console.error("Error accessing webcam:", error);
       setLoading(false);
     }
   };
 
-  // ✅ Stop Video & Clear Intervals
+  
   const stopVideo = () => {
     if (videoRef.current?.srcObject) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
@@ -85,7 +85,6 @@ const MoodDetection = () => {
     intervalRef.current = null;
   };
 
-  // ✅ Detect Mood from Facial Expressions
   const detectMood = async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
@@ -117,32 +116,30 @@ const MoodDetection = () => {
         ["neutral", 0]
       )[0];
 
-      console.log("🎭 Detected Mood:", detectedMood);
+      console.log("Detected Mood:", detectedMood);
 
       if (detectedMood !== debouncedMood) {
         setDebouncedMood(detectedMood);
         setTimeout(() => {
           if (detectedMood !== mood) {
             setMood(detectedMood);
-            fetchRecommendations(detectedMood); // Fetch recommendations automatically
           }
         }, 500);
       }
     }, 1500);
   };
 
-  // ✅ Fetch Recommendations for Mood (Manual or Detected)
   const fetchRecommendations = async (selectedMood = inputMood || mood) => {
     setLoadingPlaylist(true);
 
     if (!selectedMood) {
-      console.warn("⚠️ No mood selected for recommendations.");
+      console.warn("No mood selected for recommendations.");
       setLoadingPlaylist(false);
       return;
     }
 
     if (!token) {
-      console.warn("⚠️ No Spotify token found.");
+      console.warn("No Spotify token found.");
       setLoadingPlaylist(false);
       return;
     }
@@ -164,7 +161,7 @@ const MoodDetection = () => {
 
       setPlaylists(playlistsData);
     } catch (error) {
-      console.error("❌ Error fetching recommendations:", error.message);
+      console.error("Error fetching recommendations:", error.message);
     } finally {
       setLoadingPlaylist(false);
     }
@@ -173,16 +170,14 @@ const MoodDetection = () => {
   return (
     <>
       <div
-        className={`absolute items-center justify-center z-30 ${
-          cameraOn ? "rounded-xl" : "hidden"
-        }`}
+        className={`absolute items-center justify-center z-30 ${cameraOn ? "rounded-xl" : "hidden"}`}
       >
         {loading ? (
           ""
         ) : (
           <button
             className={`relative top-14 left-5 z-20 hover:bg-white p-2 rounded-full h-full flex items-center justify-center ${
-              mood ? "bg-[#2A9D8F]" : "bg-[#ff2c2c]"
+              mood ? "bg-[#7B3F00]" : "bg-[#ff2c2c]"
             } transition-all duration-300 hover:scale-105 text-white hover:text-black`}
             onClick={stopVideo}
             disabled={loading}
@@ -190,8 +185,8 @@ const MoodDetection = () => {
             {mood ? (
               <div>
                 <button
-                  onClick={fetchRecommendations}
-                  className="flex items-center bg-[#7B3F00] text-white justify-center gap-2 px-2"
+                  onClick={() => fetchRecommendations()}
+                  className="flex items-center  text-white justify-center gap-2 px-2"
                 >
                   See Recommendations
                   <FaMusic />
@@ -210,7 +205,7 @@ const MoodDetection = () => {
       </div>
 
       <div className="flex w-full flex-col gap-3 items-center mt-24 px-4 md:px-8">
-        <h2 className="text-2xl  lg:text-3xl flex items-center justify-center gap-3 font-semibold text-white text-center">
+        <h2 className="text-2xl lg:text-3xl flex items-center justify-center gap-3 font-semibold text-white text-center">
           Your Mood, Your Melody!
         </h2>
 
@@ -225,7 +220,7 @@ const MoodDetection = () => {
           />
           <button
             className="bg-[#7B3F00] flex gap-2 items-center justify-center border-2 border-white rounded-full px-2 py-2 whitespace-nowrap text-white font-medium hover:scale-105 transition-all duration-300"
-            onClick={fetchRecommendations}
+            onClick={() => fetchRecommendations()}
           >
             Get
             <GiMusicalNotes className="w-5 h-5" />
@@ -241,9 +236,8 @@ const MoodDetection = () => {
 
         {loadingPlaylist ? (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-          <Loader />
-        </div>
-        
+            <Loader />
+          </div>
         ) : (
           <div className="grid grid-cols-2 mt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full md:w-4/5 gap-5 justify-items-center mx-auto">
             {playlists && playlists.length > 0
