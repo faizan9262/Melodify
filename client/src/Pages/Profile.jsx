@@ -31,6 +31,7 @@ const Profile = () => {
         if (data.success) {
           setIsLoggedIn(false);
           setUserData("");
+          localStorage.removeItem("spotifyToken");
           navigate("/");
         }
       } catch (error) {
