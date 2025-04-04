@@ -51,19 +51,19 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-[#0a2728] px-4 sm:px-6 md:px-8">
+    <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080] px-4 sm:px-6 md:px-8">
       <form
         onSubmit={onSubmitHandler}
-        className="bg-[#2eb0b2] w-full sm:w-3/4 md:w-1/3 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-md p-6"
+        className="from-[#7B3F00] w-full sm:w-3/4 md:w-1/3 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-md p-6"
       >
         <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
           <img src={logo} alt="logo" className="w-10 h-10" />
-          <p className="text-base sm:text-xl text-black font-bold">Melodify</p>
+          <p className="text-base sm:text-xl text-white font-bold">Melodify</p>
         </div>
-        <h1 className="text-base sm:text-xl font-semibold text-black">
+        <h1 className="text-base sm:text-xl font-semibold text-white">
           Email Verification OTP
         </h1>
-        <p className="text-sm sm:text-base font-medium text-black">
+        <p className="text-sm sm:text-base font-medium text-white">
           Enter the 6-digit code sent to your email.
         </p>
         <div className="flex justify-between gap-2" onPaste={handlePaste}>
@@ -78,13 +78,13 @@ const VerifyEmail = () => {
                 ref={(el) => (inputRefs.current[index] = el)}
                 onInput={(e) => handleInput(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-10 h-10 sm:w-12 sm:h-12 bg-white text-[#2eb0b2] outline-none text-center text-lg sm:text-xl rounded-lg"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-[rgba(5,10,20,0.5)] text-white outline-none text-center text-lg sm:text-xl rounded-lg"
               />
             ))}
         </div>
         <button
           type="submit"
-          className="bg-[#0a2728] text-white text-base sm:text-xl py-1 w-2/3 rounded-lg font-medium hover:scale-105 hover:bg-white hover:text-black transition-all duration-300 mt-3"
+          className="bg-[#2F4F4F] text-white text-base sm:text-xl py-1 w-2/3 rounded-lg font-medium hover:scale-105 hover:bg-white hover:text-black transition-all duration-300 mt-3"
         >
           Verify Email
         </button>
