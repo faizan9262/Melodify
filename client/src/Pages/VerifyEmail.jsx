@@ -54,7 +54,7 @@ const VerifyEmail = () => {
     <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080] px-4 sm:px-6 md:px-8">
       <form
         onSubmit={onSubmitHandler}
-        className="from-[#7B3F00] w-full sm:w-3/4 md:w-1/3 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-md p-6"
+        className="bg-[#7B3F00] w-full sm:w-3/4 md:w-1/3 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-md p-6"
       >
         <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
           <img src={logo} alt="logo" className="w-10 h-10" />
@@ -84,7 +84,7 @@ const VerifyEmail = () => {
         </div>
         <button
           type="submit"
-          className="bg-[#2F4F4F] text-white text-base sm:text-xl py-1 w-2/3 rounded-lg font-medium hover:scale-105 hover:bg-white hover:text-black transition-all duration-300 mt-3"
+          className="bg-white text-black text-base sm:text-xl py-1 w-2/3 rounded-lg font-medium hover:scale-105 transition-all duration-300 mt-3"
         >
           Verify Email
         </button>
