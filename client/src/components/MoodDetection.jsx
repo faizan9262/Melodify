@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
