@@ -41,7 +41,7 @@ const Home = () => {
       if (storedToken && !isTokenExpired()) {
         setToken(storedToken);
       } else {
-        toast.error("No valid access token found.");
+        // toast.error("No valid access token found.");
       }
     }
   };

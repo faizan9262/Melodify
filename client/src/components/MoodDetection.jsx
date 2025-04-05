@@ -119,7 +119,7 @@ const MoodDetection = () => {
         ["neutral", 0]
       )[0];
 
-      toast.success("Detected Mood:", detectedMood);
+      // toast.success("Detected Mood:", detectedMood);
 
       if (detectedMood !== debouncedMood) {
         setDebouncedMood(detectedMood);

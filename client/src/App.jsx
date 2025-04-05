@@ -19,7 +19,7 @@ import { Toaster } from 'sonner';
 const App = () => {
   return (
     <div className="">
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster position="bottom-center" richColors closeButton />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
