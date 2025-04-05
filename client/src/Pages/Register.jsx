@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
+import { toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,11 +20,12 @@ const Register = () => {
         setIsLoggedIn(true);
         await getUserData();
         navigate("/");
+        toast.success(data.message)
       } else {
-        console.log(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 

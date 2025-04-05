@@ -7,6 +7,7 @@ import { BiSolidPlaylist } from "react-icons/bi";
 import { FaPlay } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
+import { toast } from "sonner";
 
 const Playlist = () => {
   const { backendUrl, token } = useContext(AppContext);
@@ -27,7 +28,7 @@ const Playlist = () => {
         );
         setPlaylist(response.data.items);
       } catch (error) {
-        console.error("Error fetching saved playlists:", error.message);
+        toast.error("Error fetching saved playlists:", error.message);
       }
       setLoading(false);
     };

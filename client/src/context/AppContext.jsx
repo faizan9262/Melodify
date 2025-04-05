@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const AppContext = createContext();
 
@@ -26,10 +27,10 @@ export const AppContextProvider = (props) => {
       if (data.success) {
         setUserData(data.user);
       } else {
-        console.log(data.message);
+        // console.log(data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -55,7 +56,7 @@ export const AppContextProvider = (props) => {
         setIsLoggedIn(false);
       }
     } catch (error) {
-      console.log("Auth status check failed:", error.message);
+      toast.error("Auth status check failed:", error.message);
       setIsLoggedIn(false);
     }
   };
@@ -65,7 +66,7 @@ export const AppContextProvider = (props) => {
   useEffect(() => {
     const storedToken = localStorage.getItem("spotify_access_token");
     if (storedToken) {
-      console.log("Stored Token:", storedToken);
+      // console.log("Stored Token:", storedToken);
       setToken(storedToken);
     }
   }, []);

@@ -8,6 +8,7 @@ import { FaPlay } from "react-icons/fa6";
 import { InfinitySpin } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { toast } from "sonner";
 
 const SavedPlaylists = () => {
   const { backendUrl, token } = useContext(AppContext);
@@ -28,7 +29,7 @@ const SavedPlaylists = () => {
         );
         setPlaylist(response.data.playlists);
       } catch (error) {
-        console.error("Error fetching saved playlists:", error.message);
+        toast.error(error.message);
       }
       setLoading(false);
     };

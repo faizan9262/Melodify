@@ -8,6 +8,7 @@ import { InfinitySpin } from "react-loader-spinner";
 import Player from "../components/Player";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "./Loader";
+import { toast } from "sonner";
 
 const PlaylistSongs = () => {
   const { backendUrl, token } = useContext(AppContext);
@@ -45,7 +46,7 @@ const PlaylistSongs = () => {
           }))
         );
       } catch (error) {
-        console.error("Error fetching playlist tracks:", error);
+        toast.error("Error fetching playlist tracks:", error);
       } finally {
         setLoading(false);
       }
@@ -58,7 +59,7 @@ const PlaylistSongs = () => {
     if (track_uri) {
       setPlayUri(track_uri);
     } else {
-      console.warn("Invalid track URI:", track_uri);
+      toast.warning("Invalid track URI:", track_uri);
     }
   };
 

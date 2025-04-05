@@ -7,6 +7,7 @@ import { AppContext } from "../context/AppContext";
 import MoodDetection from "../components/MoodDetection";
 import SpotifyLogin from "./SpotifyLogin";
 import axios from "axios";
+import { toast } from "sonner";
 
 const Home = () => {
   const { isLoggedIn, backendUrl, token, setToken } = useContext(AppContext);
@@ -34,13 +35,13 @@ const Home = () => {
         );
       }
       window.history.replaceState(null, "", window.location.pathname); // Clean URL
-      console.log("Extracted Access Token:", accessToken);
+      // console.log("Extracted Access Token:", accessToken);
     } else {
       const storedToken = localStorage.getItem("spotifyToken");
       if (storedToken && !isTokenExpired()) {
         setToken(storedToken);
       } else {
-        console.log("No valid access token found.");
+        toast.error("No valid access token found.");
       }
     }
   };
@@ -48,7 +49,7 @@ const Home = () => {
   // ✅ Clear token if expired
   useEffect(() => {
     if (token && isTokenExpired()) {
-      console.log("Token expired. Removing token.");
+      // console.log("Token expired. Removing token.");
       setToken("");
       localStorage.removeItem("spotifyToken");
       localStorage.removeItem("spotifyTokenExpiry");
@@ -68,7 +69,7 @@ const Home = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       } catch (error) {
-        console.error("Error logging play:", error);
+        toast.error("Error logging play:", error);
       }
     };
 

@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import Player from "../components/Player";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const MoodBasedPlaylist = () => {
   const {
@@ -70,9 +71,9 @@ const MoodBasedPlaylist = () => {
       navigate(`/playlist/${id}`, { replace: true });
     } catch (error) {
       if (error.code === "ECONNABORTED") {
-        console.error("Request timed out. Please try again.");
+        toast.error("Request timed out. Please try again.");
       } else {
-        console.error("Error fetching playlist tracks:", error);
+        toast.error("Error fetching playlist tracks:", error);
       }
     }
   };
@@ -81,7 +82,7 @@ const MoodBasedPlaylist = () => {
     if (track_uri) {
       setPlayUri(track_uri);
     } else {
-      console.warn("Invalid track URI:", track_uri);
+      toast.warning("Invalid track URI:", track_uri);
     }
   };
 
@@ -101,11 +102,11 @@ const MoodBasedPlaylist = () => {
           [playlistId]: !prev[playlistId],
         }));
       } else {
-        console.error("Failed to save playlist:", response.data.message);
+        toast.error("Failed to save playlist:", response.data.message);
       }
       setIsSaving(false);
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -126,10 +127,10 @@ const MoodBasedPlaylist = () => {
           return updatedPlaylists;
         });
       } else {
-        console.error("Failed to remove playlist:", response.data.message);
+        toast.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     } finally {
       setIsSaving(false);
     }

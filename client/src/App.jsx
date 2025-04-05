@@ -13,11 +13,13 @@ import SavedPlaylistSongs from "./Pages/SavedPlaylistSongs";
 import Playlist from "./components/Playlist";
 import PlaylistSongs from "./components/PlaylistSongs";
 import About from "./Pages/About";
+import { Toaster } from 'sonner';
 
 
 const App = () => {
   return (
     <div className="">
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

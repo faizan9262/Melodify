@@ -9,6 +9,7 @@ import PlaylistCard from "./PlaylistCard";
 import { useNavigate } from "react-router-dom";
 import { GiMusicalNotes } from "react-icons/gi";
 import CircularLoader from "./CircularLoader";
+import { toast } from 'sonner';
 
 const MoodDetection = () => {
   const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ const MoodDetection = () => {
         detectMood(); // Start detecting after video loads
       };
     } catch (error) {
-      console.error("Error accessing webcam:", error);
+      toast.error("Error accessing webcam:", error);
       setLoading(false);
     }
   };
@@ -118,7 +119,7 @@ const MoodDetection = () => {
         ["neutral", 0]
       )[0];
 
-      console.log("Detected Mood:", detectedMood);
+      toast.success("Detected Mood:", detectedMood);
 
       if (detectedMood !== debouncedMood) {
         setDebouncedMood(detectedMood);
@@ -135,19 +136,18 @@ const MoodDetection = () => {
     setLoadingPlaylist(true);
 
     if (!selectedMood) {
-      console.warn("No mood selected for recommendations.");
+      toast.warning("No mood selected for recommendations.");
       setLoadingPlaylist(false);
       return;
     }
 
     if (!token) {
-      console.warn("No Spotify token found.");
+      toast.warning("No Spotify token found.");
       setLoadingPlaylist(false);
       return;
     }
 
     try {
-      console.log("🔍 Fetching recommendations for:", selectedMood);
       const response = await axios.get(`${backendUrl}/api/mood/recommendations`, {
         params: { mood: selectedMood },
         headers: { Authorization: `Bearer ${token}` },
@@ -163,7 +163,7 @@ const MoodDetection = () => {
 
       setPlaylists(playlistsData);
     } catch (error) {
-      console.error("Error fetching recommendations:", error.message);
+      toast.error("Error fetching recommendations:", error.message);
     } finally {
       setLoadingPlaylist(false);
     }
@@ -192,7 +192,7 @@ const MoodDetection = () => {
       // Navigate to the playlist's detailed page
       navigate(`/playlist/${id}`);
     } catch (error) {
-      console.error("Error fetching playlist tracks:", error);
+      toast.error("Error fetching playlist tracks:", error);
     }
   };
 

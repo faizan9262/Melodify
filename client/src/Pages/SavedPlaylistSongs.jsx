@@ -8,6 +8,7 @@ import { InfinitySpin } from "react-loader-spinner";
 import Player from "../components/Player";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
+import { toast } from "sonner";
 
 const SavedPlaylistSongs = () => {
   const { backendUrl, token } = useContext(AppContext);
@@ -48,7 +49,7 @@ const SavedPlaylistSongs = () => {
           }))
         );
       } catch (error) {
-        console.error("Error fetching playlist tracks:", error);
+        toast.error(error.message);
       } finally {
         setLoading(false);
       }
@@ -69,11 +70,12 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(true);
+        toast.success(response.data.message)
       } else {
-        console.error("Failed to save playlist:", response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.log(error.message);
     } finally {
       setIsSaving(false);
     }
@@ -93,11 +95,12 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(false);
+        toast.success(response.data.message)
       } else {
-        console.error("Failed to remove playlist:", response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     } finally {
       setIsSaving(false);
     }
@@ -107,7 +110,7 @@ const SavedPlaylistSongs = () => {
     if (track_uri) {
       setPlayUri(track_uri);
     } else {
-      console.warn("Invalid track URI:", track_uri);
+      toast.warning("Invalid track URI:", track_uri);
     }
   };
 

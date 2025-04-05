@@ -3,6 +3,7 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const VerifyEmail = () => {
   const inputRefs = useRef([]);
@@ -42,11 +43,12 @@ const VerifyEmail = () => {
       if (data.success) {
         getUserData();
         navigate("/profile");
+        toast.success("Email verified Successfully.")
       } else {
-        console.log(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 

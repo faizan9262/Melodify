@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { MdSmsFailed, MdVerified } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import Navbar from "../components/Navbar";
+import { toast } from "sonner";
 
 const Profile = () => {
-  const { userData, backendUrl, setIsLoggedIn,setToken, setUserData } =
+  const { userData, backendUrl, setIsLoggedIn, setToken, setUserData } =
     useContext(AppContext);
   const navigate = useNavigate();
 
@@ -31,12 +32,13 @@ const Profile = () => {
         if (data.success) {
           setIsLoggedIn(false);
           setUserData("");
-          setToken("")
+          setToken("");
           localStorage.removeItem("spotifyToken");
           navigate("/");
+          toast.success("Logged Out!");
         }
       } catch (error) {
-        console.log(error.message);
+        toast.error(error.message);
       }
     }
   };
@@ -51,6 +53,7 @@ const Profile = () => {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      toast.info("New Profile Picture Selected");
     }
   };
 
@@ -75,7 +78,7 @@ const Profile = () => {
         }
       );
       if (data.success) {
-        alert(data.message);
+        // alert(data.message);
         // Update userData with new username and new profile picture preview if available.
         setUserData((prev) => ({
           ...prev,
@@ -86,11 +89,12 @@ const Profile = () => {
         }));
         setIsEditing(false);
         setSelectedFile(null);
+        toast.success(data.message)
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -106,14 +110,14 @@ const Profile = () => {
 
       // console.log(response.data);
       if (response.data.success) {
-        alert("OTP sent to your email!");
-        navigate("/verify-email")
+        toast.success("OTP sent to your email!");
+        navigate("/verify-email");
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      alert("Failed to send OTP. Try again later.");
+      // toast.error("Error sending OTP:", error);
+      toast.error("Failed to send OTP. Try again later.");
     }
   };
 
