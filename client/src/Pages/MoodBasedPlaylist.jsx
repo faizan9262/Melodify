@@ -1,88 +1,43 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import SongsCard from "../components/SongsCard";
-import { InfinitySpin } from "react-loader-spinner";
 import Navbar from "../components/Navbar";
-import Player from "../components/Player";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import Loader from "../components/Loader";
 
 const MoodBasedPlaylist = () => {
   const {
     songsData,
     playlists,
-    token,
     backendUrl,
-    setSongsData,
     mood,
     inputMood,
+    getTracksForMoodBasedPlaylist,
+    isLoading,
+    isLoadingSongs,
+    selectedPlaylist,
+    playlistData,
+    setPlayUri,
+    trackQueue,
+    setCurrentIndex,
+    setPlay
   } = useContext(AppContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingSongs, setIsLoadingSongs] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
-  const [playUri, setPlayUri] = useState(null);
-  const [playlistData, setPlaylistsData] = useState({});
   const [savedPlaylists, setSavedPlaylists] = useState({});
-  const navigate = useNavigate();
 
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
-
-  const getPlaylistTracks = async (id, name, image, total) => {
-    setIsLoadingSongs(true);
-    setSelectedPlaylist(id);
-    setPlayUri(`spotify:playlist:${id}`);
-
-    setPlaylistsData({
-      playlistName: name,
-      playlistIamge: image,
-      playlistTotal: total,
-    });
-
-    try {
-      const response = await axios.get(
-        `${backendUrl}/api/auth/spotify/playlists/${id}/tracks`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          timeout: 5000,
-        }
-      );
-
-      const items = response.data.items;
-      setSongsData(
-        items.map((item) => ({
-          name: item.track.name,
-          artists: item.track.artists.map((artist) => artist.name),
-          image:
-            item.track.album.images.length > 2
-              ? item.track.album.images[2].url
-              : "",
-          duration: item.track.duration_ms,
-          track_uri: item.track.uri,
-        }))
-      );
-      setIsLoadingSongs(false);
-      navigate(`/playlist/${id}`, { replace: true });
-    } catch (error) {
-      if (error.code === "ECONNABORTED") {
-        toast.error("Request timed out. Please try again.");
-      } else {
-        toast.error("Error fetching playlist tracks:", error);
-      }
-    }
-  };
-
-  const chooseTrack = (track_uri) => {
-    if (track_uri) {
-      setPlayUri(track_uri);
-    } else {
-      toast.warning("Invalid track URI:", track_uri);
+  
+  const chooseTrack = (uri) => {
+    const index = trackQueue.indexOf(uri);
+    if (index !== -1) {
+      setCurrentIndex(index);
+      setPlayUri(uri);
+      setPlay(true);  // trigger manual play
     }
   };
 
@@ -102,11 +57,11 @@ const MoodBasedPlaylist = () => {
           [playlistId]: !prev[playlistId],
         }));
       } else {
-        toast.error("Failed to save playlist:", response.data.message);
+        console.error("Failed to save playlist:", response.data.message);
       }
       setIsSaving(false);
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     }
   };
 
@@ -127,10 +82,10 @@ const MoodBasedPlaylist = () => {
           return updatedPlaylists;
         });
       } else {
-        toast.error("Failed to remove playlist:", response.data.message);
+        console.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     } finally {
       setIsSaving(false);
     }
@@ -150,7 +105,7 @@ const MoodBasedPlaylist = () => {
                 inputMood.charAt(0).toUpperCase() + inputMood.slice(1)}
             </h1>
             {isLoading ? (
-              <InfinitySpin />
+              <Loader />
             ) : playlists.length > 0 ? (
               playlists.map((item) => (
                 <div
@@ -161,7 +116,11 @@ const MoodBasedPlaylist = () => {
                       : "hover:bg-[rgba(5,10,20,0.5)] text-white"
                   }`}
                   onClick={() =>
-                    getPlaylistTracks(item.id, item.name, item.image)
+                    getTracksForMoodBasedPlaylist(
+                      item.id,
+                      item.name,
+                      item.image
+                    )
                   }
                 >
                   {item.name}
@@ -213,7 +172,7 @@ const MoodBasedPlaylist = () => {
             <hr className="text-white border-2 rounded-full my-4 mx-2" />
             {isLoadingSongs ? (
               <div className="flex items-center justify-center w-full h-full">
-                <InfinitySpin />
+                <Loader />
               </div>
             ) : songsData.length > 0 ? (
               songsData.map((item, id) => (
@@ -229,7 +188,7 @@ const MoodBasedPlaylist = () => {
             ) : (
               <p className="text-white">No songs available</p>
             )}
-            <Player trackUri={playUri} />
+            {/* <Player trackUri={playUri} /> */}
             <img
               src={songsData.image}
               alt="playlist-img"
@@ -248,7 +207,7 @@ const MoodBasedPlaylist = () => {
                 inputMood.charAt(0).toUpperCase() + inputMood.slice(1)}
             </h1>
             {isLoading ? (
-              <InfinitySpin />
+              <Loader />
             ) : playlists.length > 0 ? (
               playlists.map((item) => (
                 <div
@@ -259,7 +218,11 @@ const MoodBasedPlaylist = () => {
                       : "bg-[#7B3F00] text-white hover:bg-gray-700"
                   } text-lg`}
                   onClick={() =>
-                    getPlaylistTracks(item.id, item.name, item.image)
+                    getTracksForMoodBasedPlaylist(
+                      item.id,
+                      item.name,
+                      item.image
+                    )
                   }
                 >
                   {item.name}
@@ -316,7 +279,7 @@ const MoodBasedPlaylist = () => {
             <div className="flex flex-col items-center w-full">
               {isLoadingSongs ? (
                 <div className="flex items-center justify-center w-full h-full">
-                  <InfinitySpin />
+                  <Loader />
                 </div>
               ) : songsData.length > 0 ? (
                 songsData.map((item, id) => (
@@ -333,7 +296,7 @@ const MoodBasedPlaylist = () => {
                 <p className="text-white">No songs available</p>
               )}
             </div>
-            <Player trackUri={playUri} />
+            {/* <Player trackUri={playUri} /> */}
             <img
               src={songsData.image}
               alt="playlist-img"

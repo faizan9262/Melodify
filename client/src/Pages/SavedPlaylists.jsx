@@ -5,13 +5,11 @@ import axios from "axios";
 import PlaylistCard from "../components/PlaylistCard";
 import { BiSolidPlaylist } from "react-icons/bi";
 import { FaPlay } from "react-icons/fa6";
-import { InfinitySpin } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
-import { toast } from "sonner";
 
 const SavedPlaylists = () => {
-  const { backendUrl, token } = useContext(AppContext);
+  const { backendUrl, token, setPlaylistsData} = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [playlist, setPlaylist] = useState([]);
 
@@ -29,7 +27,7 @@ const SavedPlaylists = () => {
         );
         setPlaylist(response.data.playlists);
       } catch (error) {
-        toast.error(error.message);
+        console.error("Error fetching saved playlists:", error.message);
       }
       setLoading(false);
     };

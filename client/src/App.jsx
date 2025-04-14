@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Home from "./Pages/Home";
 import { Route, Routes } from "react-router-dom";
 import Register from "./Pages/Register";
@@ -13,13 +13,13 @@ import SavedPlaylistSongs from "./Pages/SavedPlaylistSongs";
 import Playlist from "./components/Playlist";
 import PlaylistSongs from "./components/PlaylistSongs";
 import About from "./Pages/About";
-import { Toaster } from 'sonner';
-
+import Player from "./components/Player";
+import { AppContext } from "./context/AppContext";
 
 const App = () => {
+  const { playUri,playSource } = useContext(AppContext);
   return (
     <div className="">
-      <Toaster position="bottom-center" richColors closeButton />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -35,6 +35,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
+        <Player trackUri={playUri} source={playSource}/>
     </div>
   );
 };

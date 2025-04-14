@@ -1,67 +1,44 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import axios from "axios";
 import { AppContext } from "../context/AppContext";
 import { useLocation, useParams } from "react-router-dom";
 import SongsCard from "../components/SongsCard";
-import { InfinitySpin } from "react-loader-spinner";
-import Player from "../components/Player";
-import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "./Loader";
-import { toast } from "sonner";
 
 const PlaylistSongs = () => {
-  const { backendUrl, token } = useContext(AppContext);
-  const [songsData, setSongsData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const [playUri, setPlayUri] = useState(null);
-  const { name, image, total } = location.state || {};
+  const {
+    backendUrl,
+    token,
+    setPlayUri,
+    getPlaylistTracks,
+    songsData,
+    loading,
+    playlistData,
+    trackQueue,
+    setCurrentIndex,
+    setPlay
+  } = useContext(AppContext);
+
+ const { state } = useLocation();
+  const { name, image, total } = state || {};
   const { id } = useParams();
 
-  useEffect(() => {
-    const getPlaylistTracks = async (playlistId) => {
-      setLoading(true);
-      setPlayUri(`spotify:playlist:${playlistId}`);
+useEffect(() => {
+    if (id && image && name) {
+      getPlaylistTracks(id, image, name);
+    }
+  }, [id, token, backendUrl, image, name]);
 
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/auth/spotify/playlists/${playlistId}/tracks`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const items = response.data.items;
-        setSongsData(
-          items.map((item) => ({
-            name: item.track.name,
-            artists: item.track.artists.map((artist) => artist.name),
-            image:
-              item.track.album.images.length > 2
-                ? item.track.album.images[2].url
-                : "",
-            duration: item.track.duration_ms,
-            track_uri: item.track.uri,
-          }))
-        );
-      } catch (error) {
-        toast.error("Error fetching playlist tracks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPlaylistTracks(id);
-  }, [id, token, backendUrl]);
-
-  const chooseTrack = (track_uri) => {
-    if (track_uri) {
-      setPlayUri(track_uri);
-    } else {
-      toast.warning("Invalid track URI:", track_uri);
+  const chooseTrack = (uri) => {
+    const index = trackQueue.indexOf(uri);
+    if (index !== -1) {
+      setCurrentIndex(index);
+      setPlayUri(uri);
+      setPlay(true);  // trigger manual play
     }
   };
+  
+
 
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -87,7 +64,7 @@ const PlaylistSongs = () => {
               {/* Left Column (Image) */}
               <div className="flex justify-center gap-5 sm:w-auto w-full sm:max-w-[10rem]">
                 <img
-                  src={image}
+                  src={image || playlistData.image}
                   alt="playlist"
                   className="w-32 h-32 sm:w-36 sm:h-36 rounded-md"
                 />
@@ -95,7 +72,7 @@ const PlaylistSongs = () => {
               {/* Right Column (Name) */}
               <div className="flex flex-col items-center sm:items-start justify-center gap-3 w-full sm:w-auto sm:max-w-[25rem] px-4">
                 <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-semibold text-center sm:text-left">
-                  {name}
+                  {name || playlistData.name}
                 </h1>
               </div>
             </div>
@@ -107,23 +84,18 @@ const PlaylistSongs = () => {
 
         {/* Playlist Songs Section */}
         <div className="flex flex-col w-full sm:w-4/5 items-center justify-center">
-          {!loading && songsData.length > 0 ? (
-            songsData.map((item, id) => (
-              <SongsCard
-                key={id}
-                name={item.name}
-                artists={item.artists}
-                onClick={() => chooseTrack(item.track_uri)}
-                image={item.image}
-                duration={msToMinutesAndSeconds(item.duration)}
-              />
-            ))
-          ) : (
-            !loading && <p className="text-white">No songs available</p>
-          )}
-
-          {/* Spotify Player */}
-          <Player trackUri={playUri} />
+          {!loading && songsData.length > 0
+            ? songsData.map((item, id) => (
+                <SongsCard
+                  key={id}
+                  name={item.name}
+                  artists={item.artists}
+                  onClick={() => chooseTrack(item.track_uri)}
+                  image={item.image}
+                  duration={msToMinutesAndSeconds(item.duration)}
+                />
+              ))
+            : !loading && <p className="text-white">No songs available</p>}
         </div>
       </div>
     </div>

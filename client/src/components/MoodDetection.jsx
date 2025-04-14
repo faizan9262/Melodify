@@ -22,18 +22,17 @@ const MoodDetection = () => {
   const intervalRef = useRef(null);
   const inputRef = useRef();
 
-  const navigate =  useNavigate()
 
   const {
     backendUrl,
     token,
     playlists,
     setPlaylists,
-    setSongsData,
     mood,
     setMood,
     inputMood,
     setInputMood,
+    getTracksForMoodBasedPlaylist,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -169,32 +168,7 @@ const MoodDetection = () => {
     }
   };
 
-  const getPlaylistTracks = async (id) => {
-    try {
-      const response = await axios.get(
-        `${backendUrl}/api/auth/spotify/playlists/${id}/tracks`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // Process and set songs data from playlist tracks
-      setSongsData(
-        response.data.items.map((item) => ({
-          name: item.track.name,
-          artists: item.track.artists.map((artist) => artist.name),
-          image: item.track.album.images?.[2]?.url || "",
-          duration: item.track.duration_ms,
-          track_uri: item.track.uri,
-        }))
-      );
-
-      // Navigate to the playlist's detailed page
-      navigate(`/playlist/${id}`);
-    } catch (error) {
-      toast.error("Error fetching playlist tracks:", error);
-    }
-  };
+  
 
   return (
     <>
@@ -268,13 +242,13 @@ const MoodDetection = () => {
             <Loader />
           </div>
         ) : (
-          <div className="grid grid-cols-2 mt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full md:w-4/5 gap-5 justify-items-center mx-auto">
+          <div className="grid grid-cols-2 mt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full md:w-4/5 gap-5 justify-items-center mb-32 mx-auto">
             {playlists && playlists.length > 0
               ? playlists.map((item, id) =>
                   item ? (
                     <PlaylistCard
                       key={id}
-                      onClick={() => getPlaylistTracks(item.id)}
+                      onClick={() => getTracksForMoodBasedPlaylist(item.id,item.name, item.image, item.length)}
                       name={
                         item.name.length > 20
                           ? `${item.name.slice(0, 20)}...`

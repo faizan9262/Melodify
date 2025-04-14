@@ -1,8 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import Button from "../components/Button";
 import { FaMusic } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import MoodDetection from "../components/MoodDetection";
 import SpotifyLogin from "./SpotifyLogin";
@@ -10,16 +8,13 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const Home = () => {
-  const { isLoggedIn, backendUrl, token, setToken } = useContext(AppContext);
-  const navigate = useNavigate();
+  const {backendUrl, token, setToken } = useContext(AppContext);
 
-  // ✅ Function to check if the token is expired
   const isTokenExpired = () => {
     const expiry = localStorage.getItem("spotifyTokenExpiry");
     return expiry && Date.now() > parseInt(expiry, 10);
   };
 
-  // ✅ Function to extract and store the Spotify token
   const extractToken = () => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1)); // Extract from hash
     const accessToken = hashParams.get("access_token");
@@ -46,7 +41,6 @@ const Home = () => {
     }
   };
 
-  // ✅ Clear token if expired
   useEffect(() => {
     if (token && isTokenExpired()) {
       // console.log("Token expired. Removing token.");
@@ -56,12 +50,10 @@ const Home = () => {
     }
   }, [token, setToken]);
 
-  // ✅ Extract token from URL on mount
   useEffect(() => {
     extractToken();
   }, []);
 
-  // ✅ Log play if token exists
   useEffect(() => {
     const logPlay = async () => {
       try {
@@ -81,9 +73,12 @@ const Home = () => {
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
       <Navbar />
       {token && !isTokenExpired() ? (
-        <div className="flex flex-col items-center px-4 py-6">
-          <MoodDetection />
-        </div>
+        <>
+          <div className="flex flex-col items-center px-4 py-6">
+            <MoodDetection />
+          </div>
+          
+        </>
       ) : (
         <div className="flex justify-center items-center w-full h-screen">
           <section className="px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center gap-4 w-11/12 sm:w-2/3 text-center">

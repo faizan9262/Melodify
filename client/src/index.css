@@ -3,6 +3,39 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (max-width: 640px) {
+  .rswp__devices {
+    display: none !important;
+  }
+
+  .rswp__player {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  .rswp__controls-section,
+  .rswp__volume {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .rswp__track {
+    max-width: 45% !important;
+    flex: 1 !important;
+  }
+
+  .rswp__controls {
+    flex: 1 !important;
+    justify-content: space-around !important;
+  }
+
+  .rswp__volume {
+    display: none !important; /* Optional: hide volume for more space */
+  }
+}
+
+
+
 /* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -26,7 +59,3 @@
 .oswald {
   font-family: "Oswald", serif;
 }
-
-
-
-

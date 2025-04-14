@@ -4,60 +4,34 @@ import axios from "axios";
 import { AppContext } from "../context/AppContext";
 import { useLocation, useParams } from "react-router-dom";
 import SongsCard from "../components/SongsCard";
-import { InfinitySpin } from "react-loader-spinner";
-import Player from "../components/Player";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
-import { toast } from "sonner";
 
 const SavedPlaylistSongs = () => {
-  const { backendUrl, token } = useContext(AppContext);
-  const [songsData, setSongsData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const location = useLocation();
+  const {
+    backendUrl,
+    token,
+    getSavedPlaylistTracks,
+    setPlayUri,
+    songsData,
+    playlistData,
+    loading, 
+    setCurrentIndex,
+    setPlay,
+    trackQueue
+  } = useContext(AppContext);
   const [isSaved, setIsSaved] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [playUri, setPlayUri] = useState(null);
-  const { name, image, total } = location.state || {};
+  const { state } = useLocation();
+  const { name, image, total } = state || {};
   const { id } = useParams();
   const [selectedPlaylist, setSelectedPlaylist] = useState(id);
 
   useEffect(() => {
-    const getPlaylistTracks = async (playlistId) => {
-      setLoading(true);
-      setPlayUri(`spotify:playlist:${playlistId}`);
-
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/auth/spotify/playlists/${playlistId}/tracks`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const items = response.data.items;
-        setSongsData(
-          items.map((item) => ({
-            name: item.track.name,
-            artists: item.track.artists.map((artist) => artist.name),
-            image:
-              item.track.album.images.length > 2
-                ? item.track.album.images[2].url
-                : "",
-            duration: item.track.duration_ms,
-            track_uri: item.track.uri,
-          }))
-        );
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPlaylistTracks(id);
-  }, [id, token, backendUrl]);
-
+    if (id && image && name) {
+      getSavedPlaylistTracks(id, image, name);
+    }
+  }, [id, token, backendUrl, image, name]);
   const savePlaylist = async () => {
     if (!selectedPlaylist) return;
     setIsSaving(true);
@@ -70,12 +44,11 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(true);
-        toast.success(response.data.message)
       } else {
-        toast.error(response.data.message);
+        console.error("Failed to save playlist:", response.data.message);
       }
     } catch (error) {
-      toast.log(error.message);
+      console.log(error.message);
     } finally {
       setIsSaving(false);
     }
@@ -95,22 +68,22 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(false);
-        toast.success(response.data.message)
       } else {
-        toast.error(response.data.message);
+        console.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error.message);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const chooseTrack = (track_uri) => {
-    if (track_uri) {
-      setPlayUri(track_uri);
-    } else {
-      toast.warning("Invalid track URI:", track_uri);
+  const chooseTrack = (uri) => {
+    const index = trackQueue.indexOf(uri);
+    if (index !== -1) {
+      setCurrentIndex(index);
+      setPlayUri(uri);
+      setPlay(true);  // trigger manual play
     }
   };
 
@@ -137,7 +110,7 @@ const SavedPlaylistSongs = () => {
             {/* Left Column (Image) */}
             <div className="flex items-center justify-center">
               <img
-                src={image}
+                src={image || playlistData.image}
                 alt="playlist"
                 className="w-32 h-32 sm:w-36 sm:h-36 rounded-md"
               />
@@ -145,7 +118,7 @@ const SavedPlaylistSongs = () => {
             {/* Right Column (Name & Save/Remove Button in column layout) */}
             <div className="flex flex-col items-center justify-center gap-3">
               <h1 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold text-center">
-                {name}
+                {name || playlistData.name}
               </h1>
               <div
                 className="flex gap-2 text-white cursor-pointer bg-[#7B3F00] border-white border-2 py-1 px-2 rounded-lg items-center text-base sm:text-xl hover:scale-105 transition-all duration-300 justify-center"
@@ -179,7 +152,7 @@ const SavedPlaylistSongs = () => {
         {/* Playlist Songs Section */}
         <div className="flex flex-col w-full sm:w-4/5 items-center justify-center">
           {loading ? (
-            <InfinitySpin width="100" color="#ffffff" />
+            <Loader width="100" color="#ffffff" />
           ) : songsData.length > 0 ? (
             songsData.map((item, id) => (
               <SongsCard
@@ -196,7 +169,7 @@ const SavedPlaylistSongs = () => {
           )}
 
           {/* Spotify Player */}
-          <Player trackUri={playUri} />
+          {/* <Player trackUri={playUri} /> */}
         </div>
       </div>
     </div>

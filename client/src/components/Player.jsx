@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import { AppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
-const Player = ({ trackUri }) => {
-  const { token } = useContext(AppContext);
+const Player = ({ trackUri, source }) => {
+  const { token, trackQueue, currentIndex } = useContext(AppContext);
   const [play, setPlay] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (trackUri) {
@@ -12,34 +14,36 @@ const Player = ({ trackUri }) => {
     }
   }, [trackUri]);
 
+  useEffect(() => {
+    if (trackQueue.length > 0) {
+      setPlay(true); // Auto-play when trackQueue updates
+    }
+  }, [trackQueue, currentIndex]);
+
+  const handleClick = (e) => {
+    if (source) {
+      navigate(source);
+    }
+  };
+
   if (!token) return null;
 
   return (
-    <div className="fixed bottom-2 inset-x-0 mx-auto z-50 w-[90%] sm:w-[85%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto rounded-md shadow-md border-2 border-white bg-[#7B3F00] cursor-pointer p-3 text-black flex items-center justify-center">
-      <div className="w-full">
+    <div
+      onClick={handleClick}
+      className="fixed bottom-2 inset-x-0 mx-auto z-50 w-[90%] sm:w-[85%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto rounded-md shadow-md border-2 border-white bg-[#7B3F00] cursor-pointer p-3 text-black flex items-center justify-center transition-transform duration-500 pointer-events-none"
+    >
+      <div className="w-full pointer-events-auto">
         <SpotifyPlayer
           token={token}
           showSaveIcon
           play={play}
-          uris={trackUri ? [trackUri] : []}
+          uris={trackQueue}
           callback={(state) => {
-            if (!state) {
-              console.error("Spotify Player state is null!");
-              return;
-            }
-
-            // Automatically handle play/pause state
-            if (!state.isPlaying) {
-              setPlay(false);
-            } else {
-              setPlay(true);
-            }
-
-            // Prevent auto-pausing on next/previous track
-            if (state.track.position === 0 && state.track.nextTrack) {
-              setPlay(true);
-            }
+            if (!state) return;
+            setPlay(state.isPlaying);
           }}
+          offset={currentIndex}
           styles={{
             bgColor: "#7B3F00",
             color: "#ffffff",
@@ -48,10 +52,10 @@ const Player = ({ trackUri }) => {
             sliderHandleColor: "#ffffff",
             loaderColor: "#ffffff",
             sliderTrackColor: "#ffffff",
-            sliderHeight: 6, // Reduced slider height for small screens
-            trackNameSize: "0.9rem", // Smaller text size for track name
-            trackArtistSize: "0.8rem", // Smaller text size for artist name
-            height: 45, // Reduce overall height for small screens
+            sliderHeight: 3,
+            trackNameSize: "0.75rem",
+            trackArtistSize: "0.65rem",
+            height: 38,
           }}
         />
       </div>
