@@ -6,6 +6,7 @@ import { useLocation, useParams } from "react-router-dom";
 import SongsCard from "../components/SongsCard";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
+import { toast } from "sonner";
 
 const SavedPlaylistSongs = () => {
   const {
@@ -44,8 +45,9 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(true);
+        toast.success("Playlist Saved!")
       } else {
-        console.error("Failed to save playlist:", response.data.message);
+        toast.error("Failed to save playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -68,8 +70,9 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(false);
+        toast.success("Playlist Removed!")
       } else {
-        console.error("Failed to remove playlist:", response.data.message);
+        toast.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const AppContext = createContext();
 
@@ -82,7 +83,7 @@ export const AppContextProvider = (props) => {
       setPlay(true);  // <<< Add this to trigger playback after loading.
   
     } catch (error) {
-      console.error("Error fetching playlist tracks:", error);
+      toast.error("Error fetching playlist tracks:", error);
     } finally {
       setLoading(false);
     }
@@ -128,7 +129,7 @@ export const AppContextProvider = (props) => {
       setPlay(true);
 
     } catch (error) {
-      console.error("Error fetching playlist tracks:", error);
+      toast.error("Error fetching playlist tracks:", error);
     } finally {
       setLoading(false);
     }
@@ -193,9 +194,9 @@ export const AppContextProvider = (props) => {
       navigate(`/playlist/${id}`, { replace: true });
     } catch (error) {
       if (error.code === "ECONNABORTED") {
-        console.error("Request timed out. Please try again.");
+        toast.error("Request timed out. Please try again.");
       } else {
-        console.error("Error fetching playlist tracks:", error);
+        toast.error("Error fetching playlist tracks:", error);
       }
     }
   };

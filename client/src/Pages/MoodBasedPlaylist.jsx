@@ -5,6 +5,7 @@ import SongsCard from "../components/SongsCard";
 import Navbar from "../components/Navbar";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
+import { toast } from "sonner";
 
 const MoodBasedPlaylist = () => {
   const {
@@ -56,8 +57,9 @@ const MoodBasedPlaylist = () => {
           ...prev,
           [playlistId]: !prev[playlistId],
         }));
+        toast.success("Playlist Saved!")
       } else {
-        console.error("Failed to save playlist:", response.data.message);
+        toast.error("Failed to save playlist:", response.data.message);
       }
       setIsSaving(false);
     } catch (error) {
@@ -81,8 +83,9 @@ const MoodBasedPlaylist = () => {
           delete updatedPlaylists[playlistId];
           return updatedPlaylists;
         });
+        toast.success("Playlist Removed!")
       } else {
-        console.error("Failed to remove playlist:", response.data.message);
+        toast.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);
