@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const Player = ({ trackUri, source }) => {
-  const { token, trackQueue, currentIndex } = useContext(AppContext);
+  const { token, trackQueue, currentIndex,setCurrentIndex } = useContext(AppContext);
   const [play, setPlay] = useState(false);
   const navigate = useNavigate();
 
@@ -42,6 +42,13 @@ const Player = ({ trackUri, source }) => {
           callback={(state) => {
             if (!state) return;
             setPlay(state.isPlaying);
+          
+            if (state.track && state.track.uri) {
+              const index = trackQueue.indexOf(state.track.uri);
+              if (index !== -1) {
+                setCurrentIndex(index);  // Update the global state
+              }
+            }
           }}
           offset={currentIndex}
           styles={{

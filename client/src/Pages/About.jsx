@@ -4,7 +4,7 @@ import { FaMusic, FaSpotify, FaHeadphonesAlt } from "react-icons/fa";
 
 const About = () => {
   return (
-    <div className="bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080] min-h-screen w-full text-white pb-40 sm:pb-24">
+    <div className="bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080] min-h-screen w-full text-white pb-40 sm:pb-24 ">
       <Navbar />
       
       <div className="text-center py-10">

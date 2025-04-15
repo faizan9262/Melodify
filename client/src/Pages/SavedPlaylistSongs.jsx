@@ -6,7 +6,6 @@ import { useLocation, useParams } from "react-router-dom";
 import SongsCard from "../components/SongsCard";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
-import { toast } from "sonner";
 
 const SavedPlaylistSongs = () => {
   const {
@@ -19,7 +18,8 @@ const SavedPlaylistSongs = () => {
     loading, 
     setCurrentIndex,
     setPlay,
-    trackQueue
+    trackQueue,
+    currentIndex
   } = useContext(AppContext);
   const [isSaved, setIsSaved] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -45,9 +45,8 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(true);
-        toast.success("Playlist Saved!")
       } else {
-        toast.error("Failed to save playlist:", response.data.message);
+        console.error("Failed to save playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -70,9 +69,8 @@ const SavedPlaylistSongs = () => {
 
       if (response.data.success) {
         setIsSaved(false);
-        toast.success("Playlist Removed!")
       } else {
-        toast.error("Failed to remove playlist:", response.data.message);
+        console.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -100,20 +98,27 @@ const SavedPlaylistSongs = () => {
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
       <Navbar />
       <div className="flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 lg:px-10 relative">
+        {/* Loader - Absolutely Centered */}
+        {/* {loading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Loader />
+          </div>
+        )} */}
+
         {/* Header Section - Only Show After Loading */}
         {!loading && (
-          <div className="grid grid-cols-2 md:flex md:items-center md:justify-center w-full gap-5 mt-5 mb-3">
+          <div className="grid grid-cols-2 md:flex md:items-center md:justify-center w-full gap-2 sm:gap-5 mt-5 mb-3">
             {/* Left Column (Image) */}
             <div className="flex items-center justify-center">
               <img
                 src={image || playlistData.image}
                 alt="playlist"
-                className="w-32 h-32 sm:w-36 sm:h-36 rounded-md"
+                className="w-28 h-28 sm:w-36 sm:h-36 rounded-md"
               />
             </div>
             {/* Right Column (Name & Save/Remove Button in column layout) */}
             <div className="flex flex-col items-center justify-center gap-3">
-              <h1 className="text-white text-xl sm:text-2xl md:text-3xl font-semibold text-center">
+              <h1 className="text-white text-lg sm:text-2xl md:text-3xl font-semibold text-center">
                 {name || playlistData.name}
               </h1>
               <div
@@ -158,6 +163,7 @@ const SavedPlaylistSongs = () => {
                 onClick={() => chooseTrack(item.track_uri)}
                 image={item.image}
                 duration={msToMinutesAndSeconds(item.duration)}
+                isPlaying={trackQueue[currentIndex] === item.track_uri}
               />
             ))
           ) : (

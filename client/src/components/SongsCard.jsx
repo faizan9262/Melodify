@@ -1,12 +1,15 @@
 import React from "react";
 
-const SongsCard = ({ name, onClick, artists, image, duration }) => {
+const SongsCard = ({ name, onClick, artists, image, duration,isPlaying }) => {
+  const bgClass = isPlaying ? "bg-gradient-to-r from-orange-500 via-yellow-400 to-red-400" : "bg-[rgba(5,10,20,0.5)]";
+
   return (
     <>
       {/* Mobile Layout: Two Columns */}
       <div
         onClick={onClick}
-        className="sm:hidden w-[95%] rounded-md shadow-md bg-[rgba(5,10,20,0.5)] m-2 cursor-pointer p-2 text-white flex flex-row gap-4 items-center"
+        className={`sm:hidden w-[95%] rounded-md shadow-md m-2 cursor-pointer p-2 text-white flex flex-row gap-4 items-center ${bgClass}`}
+
       >
         {/* Left Column: Image */}
         <div className="flex-shrink-0">
@@ -27,7 +30,7 @@ const SongsCard = ({ name, onClick, artists, image, duration }) => {
       {/* Desktop Layout: Original Row Layout */}
       <div
         onClick={onClick}
-        className="hidden sm:flex w-[97%] gap-3 rounded-md shadow-md bg-[rgba(5,10,20,0.5)] m-2 cursor-pointer p-2 text-white justify-between items-center"
+        className={`hidden sm:flex w-[97%] gap-3 rounded-md shadow-md m-2 cursor-pointer p-2 text-white justify-between items-center ${bgClass}`}
       >
         {/* Left: Image */}
         <div className="flex items-center">
@@ -38,7 +41,7 @@ const SongsCard = ({ name, onClick, artists, image, duration }) => {
           />
         </div>
         {/* Middle: Song Details */}
-        <div className="flex flex-col text-base justify-center flex-grow">
+        <div className="flex flex-col text-lg justify-center flex-grow">
           <p className="font-semibold">{name.split("(")[0]}</p>
           <p>Artists: {artists.join(", ")}</p>
         </div>

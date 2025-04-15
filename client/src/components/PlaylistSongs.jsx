@@ -16,7 +16,8 @@ const PlaylistSongs = () => {
     playlistData,
     trackQueue,
     setCurrentIndex,
-    setPlay
+    setPlay,
+    currentIndex
   } = useContext(AppContext);
 
  const { state } = useLocation();
@@ -93,6 +94,7 @@ useEffect(() => {
                   onClick={() => chooseTrack(item.track_uri)}
                   image={item.image}
                   duration={msToMinutesAndSeconds(item.duration)}
+                  isPlaying={trackQueue[currentIndex] === item.track_uri}
                 />
               ))
             : !loading && <p className="text-white">No songs available</p>}

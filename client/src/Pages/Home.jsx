@@ -41,17 +41,17 @@ const Home = () => {
     }
   };
 
+  console.log("Token:",token);
+  
+
   useEffect(() => {
     if (token && isTokenExpired()) {
       // console.log("Token expired. Removing token.");
       setToken("");
       localStorage.removeItem("spotifyToken");
       localStorage.removeItem("spotifyTokenExpiry");
-      
     }
   }, [token, setToken]);
-  
-  console.log("Token:",token);
 
   useEffect(() => {
     extractToken();

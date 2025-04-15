@@ -8,7 +8,7 @@ import Loader from "./Loader";
 import PlaylistCard from "./PlaylistCard";
 import { GiMusicalNotes } from "react-icons/gi";
 import CircularLoader from "./CircularLoader";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import {mapDetectedMood} from '../utils/moodMap.js'
 
 const MoodDetection = () => {
@@ -16,12 +16,12 @@ const MoodDetection = () => {
   const [loadingPlaylist, setLoadingPlaylist] = useState(false);
   const [cameraOn, setCameraOn] = useState(false);
   const [debouncedMood, setDebouncedMood] = useState(null);
+  
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const intervalRef = useRef(null);
   const inputRef = useRef();
-
 
   const {
     backendUrl,
@@ -66,7 +66,8 @@ const MoodDetection = () => {
       videoRef.current.onloadedmetadata = () => {
         setLoading(false);
         if (canvasRef.current) {
-          const aspectRatio = videoRef.current.videoWidth / videoRef.current.videoHeight;
+          const aspectRatio =
+            videoRef.current.videoWidth / videoRef.current.videoHeight;
           canvasRef.current.width = videoRef.current.clientWidth;
           canvasRef.current.height = canvasRef.current.width / aspectRatio;
         }
@@ -78,7 +79,6 @@ const MoodDetection = () => {
     }
   };
 
-  
   const stopVideo = () => {
     if (videoRef.current?.srcObject) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
@@ -120,21 +120,27 @@ const MoodDetection = () => {
         ["neutral", 0]
       )[0];
 
-      // toast.success("Detected Mood:", detectedMood);
+      // Mapping detected moods to backend values
+      const mappedMood = mapDetectedMood(detectedMood);
 
-      if (detectedMood !== debouncedMood) {
-        setDebouncedMood(detectedMood);
+      if (mappedMood !== debouncedMood) {
+        setDebouncedMood(mappedMood);
         setTimeout(() => {
-          if (detectedMood !== mood) {
-            setMood(detectedMood);
+          if (mappedMood !== mood) {
+            setMood(mappedMood);
           }
         }, 500);
       }
     }, 1500);
   };
 
+
+  // console.log("Mood Converted:",convertedMood);
+  
+
   const fetchRecommendations = async (selectedMood = convertedMood || mood) => {
     setLoadingPlaylist(true);
+    // console.log(selectedMood);
 
     if (!selectedMood) {
       toast.warning("No mood selected for recommendations.");
@@ -149,10 +155,13 @@ const MoodDetection = () => {
     }
 
     try {
-      const response = await axios.get(`${backendUrl}/api/mood/recommendations`, {
-        params: { mood: selectedMood },
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${backendUrl}/api/mood/recommendations`,
+        {
+          params: { mood: selectedMood },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const playlistsData = response.data
         .filter((item) => item.type === "playlist" && item.id)
@@ -170,12 +179,12 @@ const MoodDetection = () => {
     }
   };
 
-  
-
   return (
     <>
       <div
-        className={`absolute items-center justify-center z-30 ${cameraOn ? "rounded-xl" : "hidden"}`}
+        className={`absolute items-center justify-center z-30 ${
+          cameraOn ? "rounded-xl" : "hidden"
+        }`}
       >
         {loading ? (
           ""
@@ -255,7 +264,14 @@ const MoodDetection = () => {
                   item ? (
                     <PlaylistCard
                       key={id}
-                      onClick={() => getTracksForMoodBasedPlaylist(item.id,item.name, item.image, item.length)}
+                      onClick={() =>
+                        getTracksForMoodBasedPlaylist(
+                          item.id,
+                          item.name,
+                          item.image,
+                          item.length
+                        )
+                      }
                       name={
                         item.name.length > 20
                           ? `${item.name.slice(0, 20)}...`

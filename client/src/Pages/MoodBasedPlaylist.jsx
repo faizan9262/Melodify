@@ -5,7 +5,6 @@ import SongsCard from "../components/SongsCard";
 import Navbar from "../components/Navbar";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
 import Loader from "../components/Loader";
-import { toast } from "sonner";
 
 const MoodBasedPlaylist = () => {
   const {
@@ -24,6 +23,7 @@ const MoodBasedPlaylist = () => {
     setCurrentIndex,
     setPlay,
     convertedMood,
+    currentIndex
   } = useContext(AppContext);
   const [isSaving, setIsSaving] = useState(false);
   const [savedPlaylists, setSavedPlaylists] = useState({});
@@ -58,9 +58,8 @@ const MoodBasedPlaylist = () => {
           ...prev,
           [playlistId]: !prev[playlistId],
         }));
-        toast.success("Playlist Saved!")
       } else {
-        toast.error("Failed to save playlist:", response.data.message);
+        console.error("Failed to save playlist:", response.data.message);
       }
       setIsSaving(false);
     } catch (error) {
@@ -84,9 +83,8 @@ const MoodBasedPlaylist = () => {
           delete updatedPlaylists[playlistId];
           return updatedPlaylists;
         });
-        toast.success("Playlist Removed!")
       } else {
-        toast.error("Failed to remove playlist:", response.data.message);
+        console.error("Failed to remove playlist:", response.data.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -116,7 +114,7 @@ const MoodBasedPlaylist = () => {
                   key={item.id}
                   className={`cursor-pointer px-2 py-1 transition-all duration-300 rounded-lg ${
                     selectedPlaylist === item.id
-                      ? "bg-[rgba(5,10,20,0.5)] text-white"
+                      ? "bg-gradient-to-r from-orange-500 via-yellow-400 to-red-400 text-white"
                       : "hover:bg-[rgba(5,10,20,0.5)] text-white"
                   }`}
                   onClick={() =>
@@ -187,6 +185,7 @@ const MoodBasedPlaylist = () => {
                   onClick={() => chooseTrack(item.track_uri)}
                   image={item.image}
                   duration={msToMinutesAndSeconds(item.duration)}
+                  isPlaying={trackQueue[currentIndex] === item.track_uri}
                 />
               ))
             ) : (
@@ -208,7 +207,7 @@ const MoodBasedPlaylist = () => {
             <h1 className="hidden sm:block whitespace-nowrap font-bold text-center mt-2 text-2xl">
               Mood :{" "}
               {mood.charAt(0).toUpperCase() + mood.slice(1) ||
-                convertedMood.charAt(0).toUpperCase() + convertedMood.slice(1)}
+                inputMood.charAt(0).toUpperCase() + inputMood.slice(1)}
             </h1>
             {isLoading ? (
               <Loader />
@@ -218,8 +217,8 @@ const MoodBasedPlaylist = () => {
                   key={item.id}
                   className={`whitespace-nowrap cursor-pointer px-3 py-2 transition-all border-white border-2 duration-300 rounded-lg ${
                     selectedPlaylist === item.id
-                      ? "bg-blue-600 text-white"
-                      : "bg-[#7B3F00] text-white hover:bg-gray-700"
+                      ? "bg-gradient-to-r from-orange-500 via-yellow-400 to-red-400 text-white"
+                      : "bg-white text-black hover:bg-gray-700 border-yellow-400 border-2"
                   } text-lg`}
                   onClick={() =>
                     getTracksForMoodBasedPlaylist(
@@ -280,7 +279,7 @@ const MoodBasedPlaylist = () => {
               </div>
             ) : null}
             <hr className="text-white border-2 rounded-full my-4 mx-2" />
-            <div className="flex flex-col mb-28 items-center w-full">
+            <div className="flex flex-col items-center w-full">
               {isLoadingSongs ? (
                 <div className="flex items-center justify-center w-full h-full">
                   <Loader />
@@ -294,6 +293,7 @@ const MoodBasedPlaylist = () => {
                     onClick={() => chooseTrack(item.track_uri)}
                     image={item.image}
                     duration={msToMinutesAndSeconds(item.duration)}
+                    isPlaying={trackQueue[currentIndex] === item.track_uri}
                   />
                 ))
               ) : (

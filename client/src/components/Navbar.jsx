@@ -16,7 +16,12 @@ const Navbar = () => {
   const location = useLocation(); // Hook to get current location
 
   // Function to check if the current route matches the provided path
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="w-full bg-[#7B3F00] z-10 py-1 shadow-2xl sticky top-0 flex items-center justify-between px-4 md:px-8">
