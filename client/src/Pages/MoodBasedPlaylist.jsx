@@ -208,7 +208,7 @@ const MoodBasedPlaylist = () => {
             <h1 className="hidden sm:block whitespace-nowrap font-bold text-center mt-2 text-2xl">
               Mood :{" "}
               {mood.charAt(0).toUpperCase() + mood.slice(1) ||
-                inputMood.charAt(0).toUpperCase() + inputMood.slice(1)}
+                convertedMood.charAt(0).toUpperCase() + convertedMood.slice(1)}
             </h1>
             {isLoading ? (
               <Loader />
