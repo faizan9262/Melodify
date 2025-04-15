@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Home from "./Pages/Home";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
@@ -17,7 +17,9 @@ import Player from "./components/Player";
 import { AppContext } from "./context/AppContext";
 
 const App = () => {
-  const { playUri,playSource } = useContext(AppContext);
+  const { playUri, playSource } = useContext(AppContext);
+  const location = useLocation();
+
   return (
     <div className="">
       <Routes>
@@ -35,11 +37,10 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
-        <Player trackUri={playUri} source={playSource}/>
+
+      {location.pathname !== "/profile" && <Player trackUri={playUri} source={playSource} />}
     </div>
   );
 };
 
 export default App;
-
-// bg-gradient-to-r from-green-900 via-teal-800 via-blue-800 via-purple-800 to-indigo-900

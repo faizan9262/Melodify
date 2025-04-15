@@ -48,16 +48,13 @@ const Playlist = () => {
         // Content only appears after loading
         <>
           <div className="flex items-center justify-center gap-5">
-            <h1 className="text-xl whitespace-nowrap md:text-3xl flex items-center justify-center gap-2 text-center text-white m-5 font-semibold">
-              <BiSolidPlaylist /> My Playlists
-            </h1>
-            <h1 className="text-xl md:text-3xl whitespace-nowrap flex items-center justify-center gap-2 text-white m-5 font-semibold">
-              <FaPlay /> Total : {playlist.length}
+          <h1 className="text-xl whitespace-nowrap md:text-3xl flex items-center justify-center gap-2 text-center text-white m-5 font-semibold">
+            <FaPlay />My Spotify Playlists : {playlist.length}
             </h1>
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="grid grid-cols-2 mb-28 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-4/5 gap-5">
+            <div className="grid grid-cols-2 mb-48 sm:mb-48 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-4/5 gap-5">
               {playlist.length > 0 ? (
                 playlist.map((pl, index) => (
                   <PlaylistCard

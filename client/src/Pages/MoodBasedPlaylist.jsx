@@ -148,7 +148,7 @@ const MoodBasedPlaylist = () => {
                   {playlistData.playlistName}
                 </h1>
                 <div
-                  className="flex gap-2 text-white bg-[#7B3F00] border-white border-2 py-1 px-2 rounded-lg items-center text-xl hover:scale-105 transition-all duration-300 justify-center w-full sm:w-auto"
+                  className="flex gap-2 text-white bg-[#7B3F00] cursor-pointer border-white border-2 py-1 px-2 rounded-lg items-center text-xl hover:scale-105 transition-all duration-300 justify-center w-full sm:w-auto"
                   onClick={() =>
                     savedPlaylists[selectedPlaylist]
                       ? removePlaylist(selectedPlaylist)

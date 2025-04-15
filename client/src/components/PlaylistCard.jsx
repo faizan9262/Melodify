@@ -13,7 +13,7 @@ const PlaylistCard = ({ name, img_src, onClick }) => {
           className="w-full h-32 sm:h-48 md:h-56 lg:h-64 object-cover rounded-md"
         />
       </div>
-      <p className="bg-transparent text-sm sm:text-lg font-semibold text-center mx-2 my-3">
+      <p className="bg-transparent text-base sm:text-lg font-semibold text-center mx-2 my-3">
         {name}
       </p>
     </div>

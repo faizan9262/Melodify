@@ -45,7 +45,7 @@ const MoodDetection = () => {
           faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
           faceapi.nets.faceExpressionNet.loadFromUri("/models"),
         ]);
-        console.log("FaceAPI models loaded");
+        // console.log("FaceAPI models loaded");
       } catch (error) {
         console.error("Error loading face detection models:", error);
       }

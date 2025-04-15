@@ -18,9 +18,9 @@ const SongsCard = ({ name, onClick, artists, image, duration }) => {
         </div>
         {/* Right Column: Song Details */}
         <div className="flex flex-col text-left flex-grow">
-          <p className="text-base">{name.split("(")[0]}</p>
-          <p className="text-base">Artists: {artists.join(", ")}</p>
-          <p className="text-base">{duration}</p>
+          <p className="text-base font-semibold">{name.split("(")[0]}</p>
+          <p className="text-sm">Artists: {artists.join(", ")}</p>
+          <p className="text-sm">{duration}</p>
         </div>
       </div>
 
@@ -38,8 +38,8 @@ const SongsCard = ({ name, onClick, artists, image, duration }) => {
           />
         </div>
         {/* Middle: Song Details */}
-        <div className="flex flex-col text-lg justify-center flex-grow">
-          <p>{name.split("(")[0]}</p>
+        <div className="flex flex-col text-base justify-center flex-grow">
+          <p className="font-semibold">{name.split("(")[0]}</p>
           <p>Artists: {artists.join(", ")}</p>
         </div>
         {/* Right: Duration */}

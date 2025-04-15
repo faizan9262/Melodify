@@ -8,6 +8,7 @@ import { FaCircleInfo } from "react-icons/fa6";
 import { AiFillHome } from "react-icons/ai";
 import { FaMusic } from "react-icons/fa";
 import { FaSpotify } from "react-icons/fa";
+import { BiSolidPlaylist } from "react-icons/bi";
 
 const Navbar = () => {
   const { isLoggedIn, userData } = useContext(AppContext);
@@ -34,7 +35,7 @@ const Navbar = () => {
               onClick={() => navigate('/my-playlist')}
               className={`flex cursor-pointer rounded-lg items-center justify-center gap-1 w-10 md:w-28 ${isActive('/my-playlist') ? 'border-2' : ''}`}
             >
-              <FaMusic className="p-1 w-7 h-7" />
+              <BiSolidPlaylist className="p-1 w-7 h-7" />
               <p className="hidden md:block">Playlists</p>
             </li>
             <li
