@@ -9,7 +9,7 @@ import PlaylistCard from "./PlaylistCard";
 import { GiMusicalNotes } from "react-icons/gi";
 import CircularLoader from "./CircularLoader";
 import { toast } from 'sonner';
-import mapDetectedMood from '../utils/moodMap.js'
+import {mapDetectedMood} from '../utils/moodMap.js'
 
 const MoodDetection = () => {
   const [loading, setLoading] = useState(false);

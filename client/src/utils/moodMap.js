@@ -1,4 +1,4 @@
-export default mapDetectedMood = (textFeeling) => {
+export const mapDetectedMood = (textFeeling) => {
     const moodMap = {
       happy: [
         "😊","😄","😍","😁","😃","😸","😺","🥰","😻","🤣","😆","😎","😇","😹",
