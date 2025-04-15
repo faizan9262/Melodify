@@ -47,8 +47,11 @@ const Home = () => {
       setToken("");
       localStorage.removeItem("spotifyToken");
       localStorage.removeItem("spotifyTokenExpiry");
+      
     }
   }, [token, setToken]);
+  
+  console.log("Token:",token);
 
   useEffect(() => {
     extractToken();

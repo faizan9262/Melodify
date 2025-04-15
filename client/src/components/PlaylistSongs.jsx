@@ -83,7 +83,7 @@ useEffect(() => {
         )}
 
         {/* Playlist Songs Section */}
-        <div className="flex flex-col w-full sm:w-4/5 items-center justify-center">
+        <div className="flex flex-col w-full sm:w-4/5 mb-28 items-center justify-center">
           {!loading && songsData.length > 0
             ? songsData.map((item, id) => (
                 <SongsCard

@@ -22,7 +22,8 @@ const MoodBasedPlaylist = () => {
     setPlayUri,
     trackQueue,
     setCurrentIndex,
-    setPlay
+    setPlay,
+    convertedMood,
   } = useContext(AppContext);
   const [isSaving, setIsSaving] = useState(false);
   const [savedPlaylists, setSavedPlaylists] = useState({});
@@ -105,7 +106,7 @@ const MoodBasedPlaylist = () => {
             <h1 className="font-bold text-center mt-2 text-2xl">
               Mood :{" "}
               {mood.charAt(0).toUpperCase() + mood.slice(1) ||
-                inputMood.charAt(0).toUpperCase() + inputMood.slice(1)}
+                convertedMood.charAt(0).toUpperCase() + convertedMood.slice(1)}
             </h1>
             {isLoading ? (
               <Loader />
@@ -279,7 +280,7 @@ const MoodBasedPlaylist = () => {
               </div>
             ) : null}
             <hr className="text-white border-2 rounded-full my-4 mx-2" />
-            <div className="flex flex-col items-center w-full">
+            <div className="flex flex-col mb-28 items-center w-full">
               {isLoadingSongs ? (
                 <div className="flex items-center justify-center w-full h-full">
                   <Loader />

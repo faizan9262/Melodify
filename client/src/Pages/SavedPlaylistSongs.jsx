@@ -153,7 +153,7 @@ const SavedPlaylistSongs = () => {
         )}
 
         {/* Playlist Songs Section */}
-        <div className="flex flex-col w-full sm:w-4/5 items-center justify-center">
+        <div className="flex flex-col w-full sm:w-4/5 items-center mb-28 justify-center">
           {loading ? (
             <Loader width="100" color="#ffffff" />
           ) : songsData.length > 0 ? (

@@ -57,7 +57,7 @@ const Playlist = () => {
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-4/5 gap-5">
+            <div className="grid grid-cols-2 mb-28 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-4/5 gap-5">
               {playlist.length > 0 ? (
                 playlist.map((pl, index) => (
                   <PlaylistCard

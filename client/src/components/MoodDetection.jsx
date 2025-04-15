@@ -6,10 +6,10 @@ import { FaMusic } from "react-icons/fa";
 import { FaVideo, FaVideoSlash } from "react-icons/fa6";
 import Loader from "./Loader";
 import PlaylistCard from "./PlaylistCard";
-import { useNavigate } from "react-router-dom";
 import { GiMusicalNotes } from "react-icons/gi";
 import CircularLoader from "./CircularLoader";
 import { toast } from 'sonner';
+import mapDetectedMood from '../utils/moodMap.js'
 
 const MoodDetection = () => {
   const [loading, setLoading] = useState(false);
@@ -33,6 +33,8 @@ const MoodDetection = () => {
     inputMood,
     setInputMood,
     getTracksForMoodBasedPlaylist,
+    convertedMood,
+    setConvertedMood
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -131,7 +133,7 @@ const MoodDetection = () => {
     }, 1500);
   };
 
-  const fetchRecommendations = async (selectedMood = inputMood || mood) => {
+  const fetchRecommendations = async (selectedMood = convertedMood || mood) => {
     setLoadingPlaylist(true);
 
     if (!selectedMood) {
@@ -218,7 +220,12 @@ const MoodDetection = () => {
             className="w-full md:w-1/2 bg-white hover:scale-105 transition-all duration-300 rounded-full h-full text-lg font-medium px-5 py-2 outline-none shadow-lg text-[#7B3F00] placeholder:text-[#7B3F00]"
             placeholder="Your Mood"
             ref={inputRef}
-            onChange={(e) => setInputMood(e.target.value)}
+            onChange={(e) => {
+              const userInput = e.target.value;
+              setInputMood(userInput);
+              const mood = mapDetectedMood(userInput);
+              setConvertedMood(mood); // Detect mood, but don't overwrite input
+            }}
             value={inputMood}
           />
           <button

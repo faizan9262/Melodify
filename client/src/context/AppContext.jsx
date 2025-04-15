@@ -29,6 +29,7 @@ export const AppContextProvider = (props) => {
   const [trackQueue, setTrackQueue] = useState([]); // all URIs
   const [currentIndex, setCurrentIndex] = useState(0);
   const [play, setPlay] = useState(false);
+  const [convertedMood,setConvertedMood] =  useState("")
 
 
   const navigate = useNavigate();
@@ -210,6 +211,7 @@ export const AppContextProvider = (props) => {
     }
   }, []);
 
+
   const value = {
     backendUrl,
     isLoggedIn,
@@ -251,7 +253,9 @@ export const AppContextProvider = (props) => {
     trackQueue, 
     setTrackQueue,
     currentIndex, 
-    setCurrentIndex
+    setCurrentIndex,
+    convertedMood,
+    setConvertedMood
   };
 
   return (
