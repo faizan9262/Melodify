@@ -100,13 +100,6 @@ const SavedPlaylistSongs = () => {
     <div className="w-full min-h-screen bg-gradient-to-b from-[#7B3F00] via-[#2F4F4F] to-[#000080]">
       <Navbar />
       <div className="flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 lg:px-10 relative">
-        {/* Loader - Absolutely Centered */}
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Loader />
-          </div>
-        )}
-
         {/* Header Section - Only Show After Loading */}
         {!loading && (
           <div className="grid grid-cols-2 md:flex md:items-center md:justify-center w-full gap-5 mt-5 mb-3">
