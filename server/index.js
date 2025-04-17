@@ -29,6 +29,11 @@ app.use(
   })
 );
 
+// app.options('*', cors({
+//   origin: ["https://melodify-mood.vercel.app"],
+//   credentials: true
+// }));
+
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/auth/spotify", spotifyRouter);
