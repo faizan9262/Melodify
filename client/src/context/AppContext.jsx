@@ -54,7 +54,7 @@ export const AppContextProvider = (props) => {
   const getPlaylistTracks = async (playlistId, image, name) => {
     setLoading(true);
     setPlaySource(`/my-spotify-playlists/${playlistId}`);
-    
+  
     try {
       const response = await axios.get(
         `${backendUrl}/api/auth/spotify/playlists/${playlistId}/tracks`,
@@ -66,55 +66,14 @@ export const AppContextProvider = (props) => {
       setPlaylistsData({ name, image });
   
       const items = response.data.items;
-      const uris = items.map((song) => song.track.uri);  // fix here to ensure correct Spotify URI
+      const validItems = items.filter((song) => song.track && song.track.uri);
+      const uris = validItems.map((song) => song.track.uri);
+  
       setTrackQueue(uris);
       setCurrentIndex(0);
-      setPlayUri(uris[0]);
+  
       setSongsData(
-        items.map((item) => ({
-          name: item.track.name,
-          artists: item.track.artists.map((artist) => artist.name),
-          image: item.track.album.images.length > 2 ? item.track.album.images[2].url : "",
-          duration: item.track.duration_ms,
-          track_uri: item.track.uri,
-        }))
-      );
-  
-      setPlay(true);  // <<< Add this to trigger playback after loading.
-  
-    } catch (error) {
-      console.error("Error fetching playlist tracks:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-
-  const getSavedPlaylistTracks = async (playlistId, image, name) => {
-    setLoading(true);
-    setPlayUri(`spotify:playlist:${playlistId}`);
-    setPlaySource(`/my-playlist/${playlistId}`);
-
-    try {
-      const response = await axios.get(
-        `${backendUrl}/api/auth/spotify/playlists/${playlistId}/tracks`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setPlaylistsData({
-        name: name,
-        image: image,
-      });
-
-      const items = response.data.items;
-      const uris = items.map((song) => song.track.uri);  // fix here to ensure correct Spotify URI
-      setTrackQueue(uris);
-      setCurrentIndex(0);
-      setPlayUri(uris[0]);
-      setSongsData(
-        items.map((item) => ({
+        validItems.map((item) => ({
           name: item.track.name,
           artists: item.track.artists.map((artist) => artist.name),
           image:
@@ -125,15 +84,74 @@ export const AppContextProvider = (props) => {
           track_uri: item.track.uri,
         }))
       );
-
-      setPlay(true);
-
+  
+      if (uris.length > 0) {
+        setPlayUri(uris[0]);
+        setPlay(true);
+      } else {
+        setPlay(false);
+      }
+  
     } catch (error) {
       console.error("Error fetching playlist tracks:", error);
     } finally {
       setLoading(false);
     }
   };
+  
+  
+
+  const getSavedPlaylistTracks = async (playlistId, image, name) => {
+    setLoading(true);
+    setPlaySource(`/my-playlist/${playlistId}`);
+  
+    try {
+      const response = await axios.get(
+        `${backendUrl}/api/auth/spotify/playlists/${playlistId}/tracks`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      setPlaylistsData({
+        name: name,
+        image: image,
+      });
+  
+      const items = response.data.items;
+      const validItems = items.filter((song) => song.track && song.track.uri);
+      const uris = validItems.map((song) => song.track.uri);
+  
+      setTrackQueue(uris);
+      setCurrentIndex(0);
+  
+      setSongsData(
+        validItems.map((item) => ({
+          name: item.track.name,
+          artists: item.track.artists.map((artist) => artist.name),
+          image:
+            item.track.album.images.length > 2
+              ? item.track.album.images[2].url
+              : "",
+          duration: item.track.duration_ms,
+          track_uri: item.track.uri,
+        }))
+      );
+  
+      if (uris.length > 0) {
+        setPlayUri(uris[0]);
+        setPlay(true);
+      } else {
+        setPlay(false);
+      }
+  
+    } catch (error) {
+      console.error("Error fetching playlist tracks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   const getAuthStatus = async () => {
     try {
@@ -152,15 +170,14 @@ export const AppContextProvider = (props) => {
   const getTracksForMoodBasedPlaylist = async (id, name, image, total) => {
     setIsLoadingSongs(true);
     setSelectedPlaylist(id);
-    setPlayUri(`spotify:playlist:${id}`);
     setPlaySource(`/playlist/${id}`);
-
+  
     setPlaylistsData({
       playlistName: name,
       playlistIamge: image,
       playlistTotal: total,
     });
-
+  
     try {
       const response = await axios.get(
         `${backendUrl}/api/auth/spotify/playlists/${id}/tracks`,
@@ -169,27 +186,37 @@ export const AppContextProvider = (props) => {
           timeout: 5000,
         }
       );
-
+  
       const items = response.data.items;
-      const uris = items.map((song) => song.track.uri);  // fix here to ensure correct Spotify URI
+      const uris = items
+        .filter((song) => song.track && song.track.uri)
+        .map((song) => song.track.uri);
+  
       setTrackQueue(uris);
       setCurrentIndex(0);
-      setPlayUri(uris[0]);
+  
       setSongsData(
-        items.map((item) => ({
-          name: item.track.name,
-          artists: item.track.artists.map((artist) => artist.name),
-          image:
-            item.track.album.images.length > 2
-              ? item.track.album.images[2].url
-              : "",
-          duration: item.track.duration_ms,
-          track_uri: item.track.uri,
-        }))
+        items
+          .filter((item) => item.track && item.track.uri)
+          .map((item) => ({
+            name: item.track.name,
+            artists: item.track.artists.map((artist) => artist.name),
+            image:
+              item.track.album.images.length > 2
+                ? item.track.album.images[2].url
+                : "",
+            duration: item.track.duration_ms,
+            track_uri: item.track.uri,
+          }))
       );
-
-      setPlay(true);
-
+  
+      if (uris.length > 0) {
+        setPlayUri(uris[0]);
+        setPlay(true);
+      } else {
+        setPlay(false);
+      }
+  
       setIsLoadingSongs(false);
       navigate(`/playlist/${id}`, { replace: true });
     } catch (error) {
@@ -200,6 +227,7 @@ export const AppContextProvider = (props) => {
       }
     }
   };
+  
 
   // Initialize token from localStorage
   useEffect(() => {
